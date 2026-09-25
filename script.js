@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cvContainer = document.getElementById('cv-container');
 
     // Funcionalidad para descargar como PDF
-    btnPdf.addEventListener('click', () => {
+    if (btnPdf) {
+        btnPdf.addEventListener('click', () => {
         const opt = {
             margin:       0,
             filename:     'CV_Ricardo_Luciano.pdf',
@@ -15,4 +16,5 @@ document.addEventListener('DOMContentLoaded', () => {
         // Cambiar temporalmente los estilos si es necesario para el renderizado
         html2pdf().set(opt).from(cvContainer).save();
     });
+    }
 });

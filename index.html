@@ -26,6 +26,10 @@
         <button id="btn-pdf" class="btn btn-pdf"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
     </div>
 
+    <!-- Incluir datos y lógica de renderizado -->
+    <script src="data.js"></script>
+    <script src="render.js"></script>
+
     <!-- Contenedor principal del CV -->
     <div class="cv-wrapper">
         <div id="cv-container" class="cv-container">
@@ -33,145 +37,58 @@
             <!-- Columna Izquierda (Sidebar) -->
             <aside class="sidebar">
                 <div class="profile-pic-container">
-                    <img src="perfil.jpg" alt="Ricardo Luciano" class="profile-pic">
+                    <img id="profile-pic" src="perfil.jpg" alt="Ricardo Luciano" class="profile-pic">
                 </div>
                 
                 <div class="sidebar-section contact-info">
                     <h2 class="sidebar-title">Contacto</h2>
-                    <ul>
-                        <li><i class="fas fa-phone"></i> 849-710-6089</li>
-                        <li><i class="fas fa-envelope"></i> correo@ejemplo.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Santo Domingo, RD</li>
-                        <li><i class="fab fa-linkedin"></i> linkedin.com/in/tu-perfil</li>
-                        <li><i class="fab fa-github"></i> github.com/rikiluciano</li>
-                    </ul>
+                    <ul id="contact-list"></ul>
                 </div>
 
                 <div class="sidebar-section skills">
                     <h2 class="sidebar-title">Habilidades Técnicas</h2>
-                    
-                    <div class="skill-item">
-                        <span class="skill-name">Gestión de Inventarios (SAP)</span>
-                        <div class="progress-bar"><div class="progress" style="width: 90%;"></div></div>
-                    </div>
-                    
-                    <div class="skill-item">
-                        <span class="skill-name">Logística y Almacén</span>
-                        <div class="progress-bar"><div class="progress" style="width: 95%;"></div></div>
-                    </div>
-                    
-                    <div class="skill-item">
-                        <span class="skill-name">Microsoft Excel Avanzado</span>
-                        <div class="progress-bar"><div class="progress" style="width: 85%;"></div></div>
-                    </div>
-                    
-                    <div class="skill-item">
-                        <span class="skill-name">Desarrollo Web (HTML/CSS/JS)</span>
-                        <div class="progress-bar"><div class="progress" style="width: 60%;"></div></div>
-                    </div>
+                    <div id="skills-list"></div>
                 </div>
                 
                 <div class="sidebar-section skills">
                     <h2 class="sidebar-title">Habilidades Blandas</h2>
-                    <ul class="soft-skills">
-                        <li>Trabajo bajo presión</li>
-                        <li>Liderazgo de equipos</li>
-                        <li>Atención al detalle</li>
-                        <li>Resolución de problemas</li>
-                        <li>Adaptabilidad y aprendizaje ágil</li>
-                    </ul>
+                    <ul id="soft-skills-list" class="soft-skills"></ul>
                 </div>
             </aside>
 
             <!-- Columna Derecha (Main Content) -->
             <main class="main-content">
                 <header class="header">
-                    <h1 class="name">Ricardo <span>Luciano</span></h1>
-                    <h2 class="job-title">Especialista en Almacén | Desarrollador Full Stack (En formación)</h2>
+                    <h1 id="name-title" class="name"></h1>
+                    <h2 id="job-title" class="job-title"></h2>
                 </header>
 
                 <section class="section profile">
                     <h2 class="section-title"><i class="fas fa-user-tie"></i> Perfil Profesional</h2>
-                    <p class="section-text">
-                        Profesional de logística e inventarios con más de 4 años de experiencia garantizando el registro y disponibilidad de materiales bajo demanda de producción. Experto en manejo de SAP y Excel Avanzado. Acostumbrado a trabajar bajo presión y liderar equipos, asegurando un flujo de operaciones sin interrupciones. Actualmente ampliando mis horizontes profesionales formándome como Desarrollador Full Stack e Inteligencia Artificial, buscando aportar orden, adaptabilidad y una mentalidad de mejora continua en entornos tecnológicos y dinámicos.
-                    </p>
+                    <p id="profile-text" class="section-text"></p>
                 </section>
 
                 <section class="section experience">
                     <h2 class="section-title"><i class="fas fa-briefcase"></i> Experiencia Laboral</h2>
-                    
-                    <div class="job">
-                        <div class="job-header">
-                            <h3 class="job-role">Almacenista</h3>
-                            <span class="job-date">Marzo 2025 - Presente</span>
-                        </div>
-                        <h4 class="job-company">Cartones del Caribe, S.A.S. | Santo Domingo, RD</h4>
-                        <ul class="job-tasks">
-                            <li>Control exhaustivo del inventario de repuestos, insumos, materias primas y equipos de seguridad.</li>
-                            <li>Operación de montacargas, recepción y despacho de materiales con alta precisión.</li>
-                            <li>Coordinación interdepartamental con las áreas de producción, compras y mantenimiento, utilizando SAP y Excel avanzado.</li>
-                        </ul>
-                    </div>
-
-                    <div class="job">
-                        <div class="job-header">
-                            <h3 class="job-role">Almacenista y Pesador de Insumos</h3>
-                            <span class="job-date">Febrero 2022 - Agosto 2024</span>
-                        </div>
-                        <h4 class="job-company">Grupo SID INDUVECA S.A. | Santo Domingo, RD</h4>
-                        <ul class="job-tasks">
-                            <li>Recepción, pesaje exacto y despacho de fórmulas para productos de jugos y lácteos.</li>
-                            <li>Registro y control de la entrada y salida de insumos y materiales gastables hacia el área de producción.</li>
-                            <li>Organización general del almacén manteniendo los estándares de calidad y seguridad de la empresa.</li>
-                        </ul>
-                    </div>
-
-                    <div class="job">
-                        <div class="job-header">
-                            <h3 class="job-role">Cajero, Ventas y Atención al Cliente</h3>
-                            <span class="job-date">Septiembre 2019 - Diciembre 2021</span>
-                        </div>
-                        <h4 class="job-company">Cabaña Expreso Oriental | Santo Domingo, RD</h4>
-                        <ul class="job-tasks">
-                            <li>Atención directa al cliente, cobros, facturación y cuadre de caja.</li>
-                            <li>Supervisión de un equipo de cuatro personas en el área de cocina, garantizando eficiencia y buen servicio.</li>
-                            <li>Manejo de situaciones de alta demanda manteniendo la calma y excelente trato al cliente.</li>
-                        </ul>
-                    </div>
+                    <div id="experience-list"></div>
                 </section>
 
                 <section class="section education">
                     <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Formación Académica y Técnica</h2>
-                    
-                    <div class="edu-item">
-                        <div class="edu-header">
-                            <h3 class="edu-degree">Desarrollo Full Stack & Inteligencia Artificial</h3>
-                            <span class="edu-date">Inicio: Octubre 2026</span>
-                        </div>
-                        <h4 class="edu-institution">Talento Digital / RD Inteligente</h4>
-                    </div>
-
-                    <div class="edu-item">
-                        <div class="edu-header">
-                            <h3 class="edu-degree">Cursos Técnicos y de Ofimática</h3>
-                        </div>
-                        <h4 class="edu-institution">INFOTEP</h4>
-                        <p class="edu-desc">Excel Avanzado | Manejo de Sustancias Químicas | Gestión de Residuos Sólidos | Manejador de Presentaciones, Internet y Diseño de Páginas Web.</p>
-                    </div>
-
-                    <div class="edu-item">
-                        <div class="edu-header">
-                            <h3 class="edu-degree">Certificaciones Logísticas</h3>
-                        </div>
-                        <h4 class="edu-institution">Fundación Carlos Slim</h4>
-                        <p class="edu-desc">Almacenista y Montacarguista | Protocolos de Atención y Servicio.</p>
-                    </div>
+                    <div id="education-list"></div>
                 </section>
             </main>
         </div>
     </div>
 
     <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.cvData) {
+                renderCV(window.cvData);
+            }
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

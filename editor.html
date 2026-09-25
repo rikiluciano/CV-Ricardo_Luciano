@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>Editor de CV - Ricardo Luciano</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Estilos originales del CV y Estilos del Editor -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { margin: 0; padding: 0; display: flex; height: 100vh; background: #f0f2f5; overflow: hidden; }
+        .editor-sidebar { width: 400px; background: #fff; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 10; }
+        .editor-header { padding: 20px; background: #2c3e50; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .editor-header h2 { margin: 0; font-size: 1.2rem; }
+        .btn-save { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-save:hover { background: #219653; }
+        .editor-content { flex: 1; overflow-y: auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: #333; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; box-sizing: border-box; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .section-title-editor { margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 5px; color: #2c3e50; font-size: 1.1rem; }
+        .array-item { background: #f8f9fa; padding: 15px; border: 1px solid #e9ecef; border-radius: 4px; margin-bottom: 10px; position: relative; }
+        .btn-remove { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; padding: 5px 8px; font-size: 0.8rem; }
+        .btn-add { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; width: 100%; margin-top: 5px; }
+        
+        .preview-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; }
+        
+        /* Ajuste para que el CV escale o encaje en el preview */
+        .cv-wrapper { margin: 0 !important; box-shadow: 0 0 15px rgba(0,0,0,0.1); transform: scale(0.9); transform-origin: top center; }
+    </style>
+</head>
+<body>
+
+    <!-- Editor Sidebar -->
+    <div class="editor-sidebar">
+        <div class="editor-header">
+            <h2>Editor de CV</h2>
+            <button id="btn-save" class="btn-save"><i class="fas fa-save"></i> Guardar</button>
+        </div>
+        <div class="editor-content" id="editor-form">
+            <!-- Formulario dinámico generado por JS -->
+        </div>
+    </div>
+
+    <!-- Live Preview -->
+    <div class="preview-container">
+        <!-- Reutilizamos la estructura del index.html para la vista previa -->
+        <div class="cv-wrapper">
+            <div id="cv-container" class="cv-container">
+                <aside class="sidebar">
+                    <div class="profile-pic-container">
+                        <img id="profile-pic" src="perfil.jpg" alt="Perfil" class="profile-pic">
+                    </div>
+                    <div class="sidebar-section contact-info">
+                        <h2 class="sidebar-title">Contacto</h2>
+                        <ul id="contact-list"></ul>
+                    </div>
+                    <div class="sidebar-section skills">
+                        <h2 class="sidebar-title">Habilidades Técnicas</h2>
+                        <div id="skills-list"></div>
+                    </div>
+                    <div class="sidebar-section skills">
+                        <h2 class="sidebar-title">Habilidades Blandas</h2>
+                        <ul id="soft-skills-list" class="soft-skills"></ul>
+                    </div>
+                </aside>
+                <main class="main-content">
+                    <header class="header">
+                        <h1 id="name-title" class="name"></h1>
+                        <h2 id="job-title" class="job-title"></h2>
+                    </header>
+                    <section class="section profile">
+                        <h2 class="section-title"><i class="fas fa-user-tie"></i> Perfil Profesional</h2>
+                        <p id="profile-text" class="section-text"></p>
+                    </section>
+                    <section class="section experience">
+                        <h2 class="section-title"><i class="fas fa-briefcase"></i> Experiencia Laboral</h2>
+                        <div id="experience-list"></div>
+                    </section>
+                    <section class="section education">
+                        <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Formación Académica y Técnica</h2>
+                        <div id="education-list"></div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="github-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:30px; border-radius:8px; max-width:400px; width:90%;">
+            <h3 style="margin-top:0;">Configurar Guardado</h3>
+            <p style="font-size:0.9rem; color:#666;">Para guardar directamente en GitHub, ingresa tu Personal Access Token. Si no lo tienes, puedes continuar para descargar el archivo modificado.</p>
+            <input type="password" id="gh-token" placeholder="ghp_..." style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button id="btn-download-only" style="background:#f1c40f; color:#000; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Solo Descargar</button>
+                <button id="btn-save-token" style="background:#27ae60; color:#fff; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Guardar y Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="render.js"></script>
+    <script src="editor.js"></script>
+</body>
+</html>
