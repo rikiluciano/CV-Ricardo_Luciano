@@ -25,9 +25,9 @@ function renderCV(data) {
     // Work References
     const workRefHtml = (data.workReferences || []).map(ref => `
         <li>
-            <span class="ref-name">${ref.name}</span>
-            <span class="ref-relation">${ref.relation}</span>
-            <span class="ref-contact">${ref.contact}</span>
+            <div class="ref-name">${ref.name}</div>
+            <div class="ref-relation">${ref.relation}</div>
+            <div class="ref-contact">${ref.contact}</div>
         </li>
     `).join('');
     document.getElementById('work-references-list').innerHTML = workRefHtml;
@@ -35,9 +35,9 @@ function renderCV(data) {
     // Personal References
     const personalRefHtml = (data.personalReferences || []).map(ref => `
         <li>
-            <span class="ref-name">${ref.name}</span>
-            <span class="ref-relation">${ref.relation}</span>
-            <span class="ref-contact">${ref.contact}</span>
+            <div class="ref-name">${ref.name}</div>
+            <div class="ref-relation">${ref.relation}</div>
+            <div class="ref-contact">${ref.contact}</div>
         </li>
     `).join('');
     document.getElementById('personal-references-list').innerHTML = personalRefHtml;

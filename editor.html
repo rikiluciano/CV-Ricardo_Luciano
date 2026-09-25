@@ -11,7 +11,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Estilos originales del CV y Estilos del Editor -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Estilos (con cache buster) -->
+    <script>
+        document.write('<link rel="stylesheet" href="style.css?t=' + new Date().getTime() + '">');
+    </script>
     <style>
         body { margin: 0; padding: 0; display: flex; flex-direction: row !important; align-items: stretch !important; height: 100vh; background: #f0f2f5; overflow: hidden; }
         .editor-sidebar { width: 400px; background: #fff; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 10; }
