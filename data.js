@@ -62,9 +62,7 @@ window.cvData = {
             "date": "Septiembre 2019 - Diciembre 2021",
             "company": "Cabaña Expreso Oriental | Santo Domingo, RD",
             "tasks": [
-                "Atención directa al cliente, cobros, facturación y cuadre de caja.",
-                "Supervisión de un equipo de cuatro personas en el área de cocina, garantizando eficiencia y buen servicio.",
-                "Manejo de situaciones de alta demanda manteniendo la calma y excelente trato al cliente."
+                "Atención directa al cliente, cobros, facturación y cuadre de caja."
             ]
         }
     ],
