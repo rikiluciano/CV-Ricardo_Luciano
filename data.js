@@ -42,9 +42,9 @@ window.cvData = {
             "date": "Marzo 2025 - Presente",
             "company": "Cartones del Caribe, S.A.S. | Santo Domingo, RD",
             "tasks": [
-                "Control exhaustivo del inventario de repuestos, insumos, materias primas y equipos de seguridad.",
-                "Operación de montacargas, recepción y despacho de materiales con alta precisión.",
-                "Coordinación interdepartamental con las áreas de producción, compras y mantenimiento, utilizando SAP y Excel avanzado."
+                "Control exhaustivo del inventario de repuestos, insumos, materias primas y equipos de seguridad y limpieza.",
+                "Operación de montacargas, recepción y despacho de materiales.",
+                "Coordinación interdepartamental con las áreas de producción, compras y mantenimiento."
             ]
         },
         {
