@@ -29,13 +29,8 @@
         <button id="btn-pdf" class="btn btn-pdf"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
     </div>
 
-    <!-- Incluir datos y lógica de renderizado -->
-    <!-- Incluir datos y lógica de renderizado saltándose el caché del navegador -->
-    <script>
-        const t = new Date().getTime();
-        document.write('<script src="data.js?t=' + t + '"><\/script>');
-        document.write('<script src="render.js?t=' + t + '"><\/script>');
-    </script>
+    <!-- Incluir lógica de renderizado -->
+    <script src="render.js"></script>
 
     <!-- Contenedor principal del CV -->
     <div class="cv-wrapper">
@@ -98,16 +93,46 @@
         </div>
     </div>
 
-    <!-- Custom JS -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.cvData) {
-                renderCV(window.cvData);
+    <script src="script.js"></script>
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const uid = urlParams.get('uid');
+            
+            if (uid) {
+                // Modo público: Cargar CV de la URL
+                loadCV(uid);
+            } else {
+                // Modo privado: Comprobar sesión
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        loadCV(user.uid);
+                    } else {
+                        window.location.href = 'login.html';
+                    }
+                });
             }
         });
-    </script>
-    <script>
-        document.write('<script src="script.js?t=' + t + '"><\/script>');
+
+        async function loadCV(userId) {
+            try {
+                const cvRef = doc(db, `users/${userId}/cvs/default`);
+                const docSnap = await getDoc(cvRef);
+                if (docSnap.exists()) {
+                    window.cvData = docSnap.data();
+                    if(typeof renderCV === 'function') {
+                        renderCV(window.cvData);
+                    }
+                } else {
+                    document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">CV no encontrado o vacío</h1>';
+                }
+            } catch (error) {
+                console.error("Error obteniendo documento:", error);
+                document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">Error al cargar el CV</h1>';
+            }
+        }
     </script>
 </body>
 </html>

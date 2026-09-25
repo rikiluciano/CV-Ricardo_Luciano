@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>Iniciar Sesión - Editor de CV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+        .login-box h1 { margin-top: 0; color: #1e293b; font-size: 24px; margin-bottom: 10px; }
+        .login-box p { color: #64748b; margin-bottom: 30px; font-size: 14px; }
+        .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s; }
+        .btn-google:hover { background-color: #3367D6; }
+        .btn-google img { width: 20px; height: 20px; background: white; border-radius: 50%; padding: 2px; }
+        .loader { display: none; margin-top: 20px; color: #4285F4; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Tu CV en la Nube</h1>
+        <p>Inicia sesión para editar tu currículum o crear uno nuevo con nuestra plantilla inteligente.</p>
+        <button id="btn-login" class="btn-google">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+            Continuar con Google
+        </button>
+        <div id="loader" class="loader">Verificando sesión...</div>
+    </div>
+
+    <script type="module">
+        import { auth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from './firebase-config.js';
+        
+        const btnLogin = document.getElementById('btn-login');
+        const loader = document.getElementById('loader');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Ya logueado
+                window.location.href = 'editor.html';
+            }
+        });
+
+        btnLogin.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            btnLogin.style.display = 'none';
+            loader.style.display = 'block';
+            try {
+                await signInWithPopup(auth, provider);
+                window.location.href = 'editor.html';
+            } catch (error) {
+                console.error(error);
+                alert("Error al iniciar sesión: " + error.message);
+                btnLogin.style.display = 'flex';
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

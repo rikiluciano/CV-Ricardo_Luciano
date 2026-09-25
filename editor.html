@@ -126,19 +126,6 @@
         </div>
     </div>
 
-    <!-- Modals -->
-    <div id="github-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center;">
-        <div style="background:#fff; padding:30px; border-radius:8px; max-width:400px; width:90%;">
-            <h3 style="margin-top:0;">Configurar Guardado</h3>
-            <p style="font-size:0.9rem; color:#666;">Para guardar directamente en GitHub, ingresa tu Personal Access Token. Si no lo tienes, puedes continuar para descargar el archivo modificado.</p>
-            <input type="password" id="gh-token" placeholder="ghp_..." style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; box-sizing:border-box;">
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button id="btn-download-only" style="background:#f1c40f; color:#000; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Solo Descargar</button>
-                <button id="btn-save-token" style="background:#27ae60; color:#fff; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Guardar y Continuar</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
@@ -147,6 +134,91 @@
         document.write('<script src="data.js?t=' + t + '"><\/script>');
         document.write('<script src="render.js?t=' + t + '"><\/script>');
         document.write('<script src="editor.js?t=' + t + '"><\/script>');
+    </script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, signOut } from './firebase-config.js';
+        
+        // Botón de Cerrar Sesión
+        const header = document.querySelector('.editor-header');
+        const logoutBtn = document.createElement('button');
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Salir';
+        logoutBtn.className = 'btn-save';
+        logoutBtn.style.background = '#e11d48';
+        logoutBtn.style.marginLeft = '10px';
+        logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = 'login.html');
+        header.appendChild(logoutBtn);
+
+        let currentUserId = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                
+                // Fetch user CV data from Firestore
+                const cvRef = doc(db, `users/${user.uid}/cvs/default`);
+                const docSnap = await getDoc(cvRef);
+                
+                let data = null;
+                if (docSnap.exists()) {
+                    data = docSnap.data();
+                } else if (window.cvData) {
+                    // Migración desde data.js estático
+                    data = window.cvData;
+                    window.showToast('Datos locales cargados. Por favor presiona Guardar para subirlos a la nube.', 'success');
+                } else {
+                    // Cargar plantilla por defecto (Lorem Ipsum)
+                    data = {
+                        name: "TU NOMBRE AQUÍ",
+                        jobTitle: "TU PROFESIÓN",
+                        profileText: "Escribe aquí tu perfil profesional. Haz doble clic o usa la barra lateral para editar. ¡Empieza a crear tu CV perfecto!",
+                        profilePic: "perfil.jpg",
+                        profilePicOffsetY: 50,
+                        titles: {
+                            contact: "Contacto", skills: "Habilidades Técnicas", softSkills: "Habilidades Blandas",
+                            profile: "Perfil Profesional", experience: "Experiencia Laboral", education: "Formación",
+                            workReferences: "Referencias Laborales", personalReferences: "Referencias Personales"
+                        },
+                        contact: { phone: "123-456-7890", email: "correo@ejemplo.com", location: "Ciudad, País", linkedin: "linkedin.com/in/usuario" },
+                        skills: [{name: "Habilidad 1", level: 80}],
+                        softSkills: ["Comunicación", "Liderazgo"],
+                        experience: [{role: "Puesto", company: "Empresa", date: "2020 - Presente", tasks: ["Tarea importante 1"]}],
+                        education: [{degree: "Título Universitario", institution: "Universidad", date: "2015 - 2019", description: "Descripción"}],
+                        workReferences: [],
+                        personalReferences: []
+                    };
+                }
+                
+                // Iniciar editor con datos
+                window.startEditor(data);
+                
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Escuchar el evento de guardado
+        window.addEventListener('saveToFirebase', async (e) => {
+            if(!currentUserId) return;
+            const editorData = e.detail;
+            
+            const btn = document.getElementById('btn-save');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            btn.disabled = true;
+
+            try {
+                const cvRef = doc(db, `users/${currentUserId}/cvs/default`);
+                await setDoc(cvRef, editorData);
+                window.showToast('¡Guardado exitosamente en la Nube!', 'success');
+            } catch (error) {
+                console.error("Error guardando:", error);
+                window.showToast('Error al guardar.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
