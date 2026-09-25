@@ -271,7 +271,6 @@
 
     <script>
         const t = new Date().getTime();
-        document.write('<script src="data.js?t=' + t + '"><\/script>');
         document.write('<script src="render.js?t=' + t + '"><\/script>');
         document.write('<script src="editor.js?t=' + t + '"><\/script>');
     </script>
@@ -317,17 +316,13 @@
                 let data = null;
                 if (docSnap.exists()) {
                     data = docSnap.data();
-                } else if (window.cvData) {
-                    // Migración desde data.js estático
-                    data = window.cvData;
-                    window.showToast('Datos locales cargados. Por favor presiona Guardar para subirlos a la nube.', 'success');
                 } else {
                     // Cargar plantilla por defecto (Lorem Ipsum)
                     data = {
                         name: "TU NOMBRE AQUÍ",
                         jobTitle: "TU PROFESIÓN",
                         profileText: "Escribe aquí tu perfil profesional. Haz doble clic o usa la barra lateral para editar. ¡Empieza a crear tu CV perfecto!",
-                        profilePic: "perfil.jpg",
+                        profilePic: "",
                         profilePicOffsetY: 50,
                         titles: {
                             contact: "Contacto", skills: "Habilidades Técnicas", softSkills: "Habilidades Blandas",
