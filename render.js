@@ -57,6 +57,23 @@ function renderCV(data) {
         </div>
     `).join('');
     document.getElementById('education-list').innerHTML = eduHtml;
+
+    // Titles
+    const titles = data.titles || {
+        contact: "Contacto",
+        skills: "Habilidades Técnicas",
+        softSkills: "Habilidades Blandas",
+        profile: "Perfil Profesional",
+        experience: "Experiencia Laboral",
+        education: "Formación Académica y Técnica"
+    };
+    
+    if (document.getElementById('title-contact')) document.getElementById('title-contact').innerText = titles.contact;
+    if (document.getElementById('title-skills')) document.getElementById('title-skills').innerText = titles.skills;
+    if (document.getElementById('title-softSkills')) document.getElementById('title-softSkills').innerText = titles.softSkills;
+    if (document.getElementById('title-profile')) document.getElementById('title-profile').innerText = titles.profile;
+    if (document.getElementById('title-experience')) document.getElementById('title-experience').innerText = titles.experience;
+    if (document.getElementById('title-education')) document.getElementById('title-education').innerText = titles.education;
 }
 
 // Función inteligente para resaltar palabras clave EXACTAS

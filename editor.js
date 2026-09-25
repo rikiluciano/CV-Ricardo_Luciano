@@ -1,5 +1,17 @@
 let editorData = JSON.parse(JSON.stringify(window.cvData || {}));
 
+// Asegurar que exista el objeto titles
+if (!editorData.titles) {
+    editorData.titles = {
+        contact: "Contacto",
+        skills: "Habilidades Técnicas",
+        softSkills: "Habilidades Blandas",
+        profile: "Perfil Profesional",
+        experience: "Experiencia Laboral",
+        education: "Formación Académica y Técnica"
+    };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
     updatePreview(editorData);
@@ -39,6 +51,15 @@ function renderForm() {
     html += createInput('lastName', 'Apellido', editorData.lastName);
     html += createInput('jobTitle', 'Título Profesional', editorData.jobTitle);
     html += createTextarea('profileText', 'Perfil Profesional', editorData.profileText);
+
+    // Títulos de Secciones
+    html += `<h3 class="section-title-editor">Títulos de Secciones</h3>`;
+    html += createInput('titles.profile', 'Perfil Profesional', editorData.titles.profile);
+    html += createInput('titles.experience', 'Experiencia Laboral', editorData.titles.experience);
+    html += createInput('titles.education', 'Educación', editorData.titles.education);
+    html += createInput('titles.skills', 'Habilidades Técnicas', editorData.titles.skills);
+    html += createInput('titles.softSkills', 'Habilidades Blandas', editorData.titles.softSkills);
+    html += createInput('titles.contact', 'Contacto', editorData.titles.contact);
 
     // Contacto
     html += `<h3 class="section-title-editor">Contacto</h3>`;
