@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function updatePreview(data) {
     renderCV(data);
-    if(typeof analyzeCV === 'function') analyzeCV(data);
 }
 
 function initEditor() {
@@ -274,19 +273,6 @@ function showToast(message, type = 'success') {
 }
 
 // === Inteligencia Artificial Básica (Linter de CV) ===
-function analyzeCV(data) {
-    let score = 10.0;
-    const suggestions = [];
-
-    // 1. Longitud del perfil
-    const pLen = data.profileText ? data.profileText.trim().length : 0;
-    if (pLen < 150) {
-        score -= 1.5;
-        suggestions.push("✏️ Tu perfil profesional es un poco corto. Intenta destacar más tus mayores logros y qué puedes aportar a una empresa.");
-    } else if (pLen > 700) {
-        score -= 1.0;
-        suggestions.push("✂️ Tu perfil es algo extenso. Los reclutadores prefieren leer entre 3 y 5 líneas concisas y de alto impacto.");
-    }
 
     // 2. LinkedIn
     if (!data.contact || !data.contact.linkedin || data.contact.linkedin.trim() === '') {
@@ -356,4 +342,3 @@ function analyzeCV(data) {
             suggestionsEl.innerHTML = suggestions.map(s => `<li style="margin-bottom:8px;">${s}</li>`).join('');
         }
     }
-}
