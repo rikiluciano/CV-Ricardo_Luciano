@@ -10,6 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initEditor() {
+    renderForm();
+
+    // Escuchar cambios de texto
+    document.getElementById('editor-form').addEventListener('input', (e) => {
+        if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const path = e.target.dataset.path;
+            if (path) {
+                updateDataByPath(editorData, path, e.target.value);
+                renderCV(editorData);
+            }
+        }
+    });
+}
+
+function renderForm() {
     const formContainer = document.getElementById('editor-form');
     let html = '';
 
@@ -28,17 +43,91 @@ function initEditor() {
     html += createInput('contact.linkedin', 'LinkedIn', editorData.contact.linkedin);
     html += createInput('contact.github', 'GitHub', editorData.contact.github);
 
+    // Habilidades Técnicas
+    html += `<h3 class="section-title-editor">Habilidades Técnicas</h3>`;
+    html += `<div id="skills-container"></div>`;
+    html += `<button type="button" class="btn-add" onclick="addItem('skills')"><i class="fas fa-plus"></i> Agregar Habilidad</button>`;
+
+    // Habilidades Blandas
+    html += `<h3 class="section-title-editor">Habilidades Blandas</h3>`;
+    html += `<div id="softskills-container"></div>`;
+    html += `<button type="button" class="btn-add" onclick="addItem('softSkills')"><i class="fas fa-plus"></i> Agregar Habilidad Blanda</button>`;
+
+    // Experiencia
+    html += `<h3 class="section-title-editor">Experiencia Laboral</h3>`;
+    html += `<div id="experience-container"></div>`;
+    html += `<button type="button" class="btn-add" onclick="addItem('experience')"><i class="fas fa-plus"></i> Agregar Experiencia</button>`;
+
+    // Educación
+    html += `<h3 class="section-title-editor">Educación</h3>`;
+    html += `<div id="education-container"></div>`;
+    html += `<button type="button" class="btn-add" onclick="addItem('education')"><i class="fas fa-plus"></i> Agregar Educación</button>`;
+
     formContainer.innerHTML = html;
 
-    // Escuchar cambios
-    formContainer.addEventListener('input', (e) => {
-        if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            const path = e.target.dataset.path;
-            updateDataByPath(editorData, path, e.target.value);
-            renderCV(editorData);
-        }
-    });
+    // Renderizar sub-listas
+    renderArrayItems();
 }
+
+function renderArrayItems() {
+    // Skills
+    document.getElementById('skills-container').innerHTML = editorData.skills.map((item, i) => `
+        <div class="array-item">
+            <button class="btn-remove" onclick="removeItem('skills', ${i})"><i class="fas fa-trash"></i></button>
+            ${createInput(`skills.${i}.name`, 'Habilidad', item.name)}
+            ${createInput(`skills.${i}.level`, 'Nivel (0-100)', item.level)}
+        </div>
+    `).join('');
+
+    // Soft Skills
+    document.getElementById('softskills-container').innerHTML = editorData.softSkills.map((item, i) => `
+        <div class="array-item">
+            <button class="btn-remove" onclick="removeItem('softSkills', ${i})"><i class="fas fa-trash"></i></button>
+            ${createInput(`softSkills.${i}`, 'Habilidad', item)}
+        </div>
+    `).join('');
+
+    // Experience
+    document.getElementById('experience-container').innerHTML = editorData.experience.map((item, i) => `
+        <div class="array-item">
+            <button class="btn-remove" onclick="removeItem('experience', ${i})"><i class="fas fa-trash"></i></button>
+            ${createInput(`experience.${i}.role`, 'Puesto', item.role)}
+            ${createInput(`experience.${i}.company`, 'Empresa', item.company)}
+            ${createInput(`experience.${i}.date`, 'Fechas', item.date)}
+            <div class="form-group"><label>Tareas (separadas por punto y coma)</label>
+            <textarea data-path="experience.${i}.tasks_str">${item.tasks.join('; ')}</textarea></div>
+        </div>
+    `).join('');
+
+    // Education
+    document.getElementById('education-container').innerHTML = editorData.education.map((item, i) => `
+        <div class="array-item">
+            <button class="btn-remove" onclick="removeItem('education', ${i})"><i class="fas fa-trash"></i></button>
+            ${createInput(`education.${i}.degree`, 'Título', item.degree)}
+            ${createInput(`education.${i}.institution`, 'Institución', item.institution)}
+            ${createInput(`education.${i}.date`, 'Fecha', item.date)}
+            ${createTextarea(`education.${i}.description`, 'Descripción', item.description)}
+        </div>
+    `).join('');
+}
+
+function addItem(type) {
+    if (type === 'skills') editorData.skills.push({ name: 'Nueva Habilidad', level: 50 });
+    if (type === 'softSkills') editorData.softSkills.push('Nueva Habilidad');
+    if (type === 'experience') editorData.experience.push({ role: 'Puesto', company: 'Empresa', date: '', tasks: ['Tarea 1'] });
+    if (type === 'education') editorData.education.push({ degree: 'Título', institution: 'Institución', date: '', description: '' });
+    
+    renderArrayItems();
+    renderCV(editorData);
+}
+
+window.removeItem = function(type, index) {
+    if(confirm('¿Estás seguro de eliminar este elemento?')) {
+        editorData[type].splice(index, 1);
+        renderArrayItems();
+        renderCV(editorData);
+    }
+};
 
 function createInput(path, label, value) {
     return `
@@ -59,6 +148,15 @@ function createTextarea(path, label, value) {
 }
 
 function updateDataByPath(obj, path, value) {
+    if (path.endsWith('.tasks_str')) {
+        const realPath = path.replace('.tasks_str', '');
+        const keys = realPath.split('.');
+        let current = obj;
+        for(let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
+        current[keys[keys.length - 1]].tasks = value.split(';').map(s => s.trim()).filter(s => s);
+        return;
+    }
+
     const keys = path.split('.');
     let current = obj;
     for(let i = 0; i < keys.length - 1; i++) {
