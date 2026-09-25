@@ -35,7 +35,7 @@ window.cvData = {
         "Resolución de problemas",
         "Adaptabilidad y aprendizaje ágil"
     ],
-    "profileText": "Actualmente me desempeño como almacenista con más de 4 años de experiencia en gestión de inventarios, recepción, despacho y abastecimiento a producción, en empresas como INDUVECA (Grupo SID) y Cartones del Caribe. \n\nExperiencia en control de materias primas, repuestos e insumos, operación de montacargas y coordinación con Producción, Compras y Mantenimiento. Manejo de SAP y Excel avanzado. Actualmente me formo como Desarrollador Full Stack e Inteligencia Artificial, combinando experiencia operativa, capacidad de adaptación y orientación al aprendizaje continuo.",
+    "profileText": "Actualmente me desempeño como almacenista con más de 4 años de experiencia en gestión de inventarios, recepción, despacho y abastecimiento a producción, en empresas como INDUVECA (Grupo SID) y Cartones del Caribe. \n\nExperiencia en control de materias primas, repuestos e insumos, operación de montacargas y coordinación con producción, compras y mantenimiento. Manejo de SAP y Excel avanzado. \n\nActualmente me formo como Desarrollador Full Stack e Inteligencia Artificial, combinando experiencia operativa, capacidad de adaptación y orientación al aprendizaje continuo.",
     "experience": [
         {
             "role": "Almacenista",
