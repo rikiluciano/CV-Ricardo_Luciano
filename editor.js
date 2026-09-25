@@ -85,7 +85,7 @@ function saveWithToken() {
         document.getElementById('github-modal').style.display = 'none';
         pushToGitHub(token);
     } else {
-        alert("Por favor ingresa un token válido.");
+        showToast("Por favor ingresa un token válido.", "error");
     }
 }
 
@@ -101,7 +101,7 @@ function downloadDataJS() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert("Archivo data.js descargado. Recuerda subirlo manualmente a tu repositorio en GitHub.");
+    showToast("Archivo data.js descargado. Recuerda subirlo manualmente a tu repositorio en GitHub.", "success");
 }
 
 async function pushToGitHub(token) {
@@ -149,19 +149,44 @@ async function pushToGitHub(token) {
         });
 
         if(putRes.ok) {
-            alert("¡Cambios guardados en GitHub con éxito! La página web pública se actualizará en 1-2 minutos.");
+            showToast("¡Cambios guardados en GitHub con éxito! La página web pública se actualizará en 1-2 minutos.", "success");
         } else {
             const err = await putRes.json();
             console.error(err);
-            alert("Error al guardar en GitHub: " + err.message + "\n\nIntentando descargar el archivo...");
+            showToast("Error al guardar en GitHub: " + err.message + ". Intentando descargar el archivo...", "error");
             downloadDataJS();
         }
     } catch (error) {
         console.error(error);
-        alert("Ocurrió un error de conexión.");
+        showToast("Ocurrió un error de conexión.", "error");
         downloadDataJS();
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
+}
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    
+    toast.innerHTML = `
+        <i class="fas ${icon} toast-icon"></i>
+        <div class="toast-content">${message}</div>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Eliminar después de 4 segundos
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            if(container.contains(toast)) {
+                container.removeChild(toast);
+            }
+        }, 300);
+    }, 4000);
 }
