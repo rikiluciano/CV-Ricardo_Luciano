@@ -3,12 +3,12 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChang
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  projectId: "cv-editor-ricardo",
-  appId: "1:949453348236:web:773ba178a483f58edf8aa9",
-  storageBucket: "cv-editor-ricardo.firebasestorage.app",
-  apiKey: "AIzaSyBXaRx5UyUVjMqBrCWEAG8VihySDEZqGoo",
-  authDomain: "cv-editor-ricardo.firebaseapp.com",
-  messagingSenderId: "949453348236"
+  projectId: "cv-ricardo-pro",
+  appId: "1:987128880933:web:bbadc99e833642fc9784cc",
+  storageBucket: "cv-ricardo-pro.firebasestorage.app",
+  apiKey: "AIzaSyB7nkA6udC0DPQ0dCdWiNpR5ayuFf5oPVs",
+  authDomain: "cv-ricardo-pro.firebaseapp.com",
+  messagingSenderId: "987128880933"
 };
 
 const app = initializeApp(firebaseConfig);
