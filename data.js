@@ -5,9 +5,9 @@ window.cvData = {
     "profilePic": "perfil.jpg",
     "contact": {
         "phone": "849-710-6089",
-        "email": "correo@ejemplo.com",
-        "location": "Santo Domingo, RD",
-        "linkedin": "linkedin.com/in/tu-perfil",
+        "email": "rikiluciano588@gmail.com",
+        "location": "La victoria, Santo Domingo norte, RD.",
+        "linkedin": "https://www.linkedin.com/in/rikiluciano/",
         "github": "github.com/rikiluciano"
     },
     "skills": [
