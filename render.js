@@ -39,7 +39,7 @@ function renderCV(data) {
             </div>
             <h4 class="job-company">${job.company}</h4>
             <ul class="job-tasks">
-                ${job.tasks.map(task => `<li>${highlightKeywords(task, data)}</li>`).join('')}
+                ${job.tasks.map(task => `<li>${task}</li>`).join('')}
             </ul>
         </div>
     `).join('');
@@ -53,40 +53,55 @@ function renderCV(data) {
                 ${edu.date ? `<span class="edu-date">${edu.date}</span>` : ''}
             </div>
             <h4 class="edu-institution">${edu.institution}</h4>
-            ${edu.description ? `<p class="edu-desc">${highlightKeywords(edu.description, data)}</p>` : ''}
+            ${edu.description ? `<p class="edu-desc">${edu.description}</p>` : ''}
         </div>
     `).join('');
     document.getElementById('education-list').innerHTML = eduHtml;
 }
 
-// Función inteligente para resaltar palabras clave
+// Función inteligente para resaltar palabras clave EXACTAS
 function highlightKeywords(text, data) {
     if (!text) return '';
     
-    // 1. Extraer palabras clave de las habilidades del usuario (esto lo hace dinámico)
+    // 1. Extraer frases y habilidades exactas del usuario
     const userSkills = data.skills.map(s => s.name);
     const userSoftSkills = data.softSkills;
     
-    // 2. Diccionario de palabras clave de alto impacto adicionales
+    // 2. Diccionario de frases técnicas y conceptos clave completos (sin palabras sueltas genéricas)
     const extraKeywords = [
-        'Desarrollador Full Stack', 'Inteligencia Artificial', 'Frontend', 'Backend',
-        'Logística', 'Inventarios', 'Liderazgo', 'Liderar', 'Optimizar', 'Gestión', 
-        'Productividad', 'Eficiencia', 'Automatización', 'Innovación', 'Proactivo',
-        'Desarrollo Web', 'SAP', 'Excel Avanzado', 'Bases de datos', 'KPIs'
+        'Desarrollador Full Stack', 
+        'Inteligencia Artificial', 
+        'Desarrollo Web', 
+        'Excel Avanzado', 
+        'Bases de datos'
     ];
     
     // Unir todo, eliminar duplicados, y limpiar espacios
     let allKeywords = [...new Set([...userSkills, ...userSoftSkills, ...extraKeywords])]
         .filter(k => k.trim().length > 2); // ignorar palabras muy cortas
         
-    // Ordenar de mayor a menor longitud para que "Excel Avanzado" se resalte antes que "Excel"
-    allKeywords.sort((a, b) => b.length - a.length);
+    // Limpieza adicional: Si una habilidad tiene paréntesis ej: "Gestión de inventarios (SAP)", 
+    // extraer también la frase sin paréntesis para que pueda coincidir en el texto normal.
+    const cleanKeywords = [];
+    allKeywords.forEach(k => {
+        cleanKeywords.push(k);
+        if (k.includes('(') && k.includes(')')) {
+            cleanKeywords.push(k.replace(/\(.*?\)/g, '').trim());
+            const insideParens = k.match(/\(([^)]+)\)/)[1];
+            cleanKeywords.push(insideParens.trim());
+        }
+    });
+
+    let finalKeywords = [...new Set(cleanKeywords)].filter(k => k.length > 2);
+        
+    // Ordenar de mayor a menor longitud para que las frases largas se prioricen y no se rompan
+    finalKeywords.sort((a, b) => b.length - a.length);
     
     // Escapar caracteres especiales para RegExp
     const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     
-    // Construir la expresión regular
-    const pattern = new RegExp(`\\b(${allKeywords.map(escapeRegExp).join('|')})\\b`, 'gi');
+    // Construir la expresión regular para que coincida con la frase exacta
+    const pattern = new RegExp(`\\b(${finalKeywords.map(escapeRegExp).join('|')})\\b`, 'gi');
     
     // Reemplazar envolviendo en strong
     return text.replace(pattern, '<strong>$1</strong>');
