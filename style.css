@@ -173,6 +173,46 @@ h1, h2, h3, h4, h5, h6 {
     top: 0;
 }
 
+.references-list {
+    list-style: none;
+}
+
+.references-list li {
+    margin-bottom: 15px;
+    font-size: 14px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.references-list li::before {
+    content: '▪';
+    color: var(--accent-light);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.ref-name {
+    display: block;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 2px;
+}
+
+.ref-relation {
+    display: block;
+    color: var(--sidebar-text);
+    font-style: italic;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.ref-contact {
+    display: block;
+    color: var(--accent-light);
+    font-size: 13px;
+}
+
 /* Main Content (Columna Derecha) */
 .main-content {
     width: 67%;

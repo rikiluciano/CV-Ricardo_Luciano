@@ -8,9 +8,13 @@ if (!editorData.titles) {
         softSkills: "Habilidades Blandas",
         profile: "Perfil Profesional",
         experience: "Experiencia Laboral",
-        education: "Formación Académica y Técnica"
+        education: "Formación Académica y Técnica",
+        workReferences: "Referencias Laborales",
+        personalReferences: "Referencias Personales"
     };
 }
+if (!editorData.workReferences) editorData.workReferences = [];
+if (!editorData.personalReferences) editorData.personalReferences = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
@@ -71,6 +75,8 @@ function renderForm() {
     html += createInput('titles.skills', 'Habilidades Técnicas', editorData.titles.skills);
     html += createInput('titles.softSkills', 'Habilidades Blandas', editorData.titles.softSkills);
     html += createInput('titles.contact', 'Contacto', editorData.titles.contact);
+    html += createInput('titles.workReferences', 'Referencias Laborales', editorData.titles.workReferences);
+    html += createInput('titles.personalReferences', 'Referencias Personales', editorData.titles.personalReferences);
 
     // Contacto
     html += `<h3 class="section-title-editor">Contacto</h3>`;
@@ -89,6 +95,16 @@ function renderForm() {
     html += `<h3 class="section-title-editor">Habilidades Blandas</h3>`;
     html += `<div id="softskills-container"></div>`;
     html += `<button type="button" class="btn-add" onclick="addItem('softSkills')"><i class="fas fa-plus"></i> Agregar Habilidad Blanda</button>`;
+
+    // Referencias Laborales
+    html += `<h3 class="section-title-editor">Referencias Laborales</h3>`;
+    html += `<div id="work-references-container"></div>`;
+    html += `<button type="button" class="btn-add" onclick="addItem('workReferences')"><i class="fas fa-plus"></i> Agregar Referencia</button>`;
+
+    // Referencias Personales
+    html += `<h3 class="section-title-editor">Referencias Personales</h3>`;
+    html += `<div id="personal-references-container"></div>`;
+    html += `<button type="button" class="btn-add" onclick="addItem('personalReferences')"><i class="fas fa-plus"></i> Agregar Referencia</button>`;
 
     // Experiencia
     html += `<h3 class="section-title-editor">Experiencia Laboral</h3>`;
@@ -124,6 +140,26 @@ function renderArrayItems() {
         </div>
     `).join('');
 
+    // Work References
+    document.getElementById('work-references-container').innerHTML = editorData.workReferences.map((item, i) => `
+        <div class="array-item">
+            <button class="btn-remove" onclick="removeItem('workReferences', ${i})"><i class="fas fa-trash"></i></button>
+            ${createInput(`workReferences.${i}.name`, 'Nombre', item.name)}
+            ${createInput(`workReferences.${i}.relation`, 'Cargo / Relación', item.relation)}
+            ${createInput(`workReferences.${i}.contact`, 'Contacto (Teléfono/Email)', item.contact)}
+        </div>
+    `).join('');
+
+    // Personal References
+    document.getElementById('personal-references-container').innerHTML = editorData.personalReferences.map((item, i) => `
+        <div class="array-item">
+            <button class="btn-remove" onclick="removeItem('personalReferences', ${i})"><i class="fas fa-trash"></i></button>
+            ${createInput(`personalReferences.${i}.name`, 'Nombre', item.name)}
+            ${createInput(`personalReferences.${i}.relation`, 'Relación', item.relation)}
+            ${createInput(`personalReferences.${i}.contact`, 'Contacto (Teléfono/Email)', item.contact)}
+        </div>
+    `).join('');
+
     // Experience
     document.getElementById('experience-container').innerHTML = editorData.experience.map((item, i) => `
         <div class="array-item">
@@ -151,6 +187,8 @@ function renderArrayItems() {
 function addItem(type) {
     if (type === 'skills') editorData.skills.push({ name: 'Nueva Habilidad', level: 50 });
     if (type === 'softSkills') editorData.softSkills.push('Nueva Habilidad');
+    if (type === 'workReferences') editorData.workReferences.push({ name: 'Nombre', relation: 'Relación/Cargo', contact: 'Teléfono' });
+    if (type === 'personalReferences') editorData.personalReferences.push({ name: 'Nombre', relation: 'Relación', contact: 'Teléfono' });
     if (type === 'experience') editorData.experience.push({ role: 'Puesto', company: 'Empresa', date: '', tasks: ['Tarea 1'] });
     if (type === 'education') editorData.education.push({ degree: 'Título', institution: 'Institución', date: '', description: '' });
     

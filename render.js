@@ -22,6 +22,26 @@ function renderCV(data) {
     const softSkillsHtml = data.softSkills.map(skill => `<li>${skill}</li>`).join('');
     document.getElementById('soft-skills-list').innerHTML = softSkillsHtml;
 
+    // Work References
+    const workRefHtml = (data.workReferences || []).map(ref => `
+        <li>
+            <span class="ref-name">${ref.name}</span>
+            <span class="ref-relation">${ref.relation}</span>
+            <span class="ref-contact">${ref.contact}</span>
+        </li>
+    `).join('');
+    document.getElementById('work-references-list').innerHTML = workRefHtml;
+
+    // Personal References
+    const personalRefHtml = (data.personalReferences || []).map(ref => `
+        <li>
+            <span class="ref-name">${ref.name}</span>
+            <span class="ref-relation">${ref.relation}</span>
+            <span class="ref-contact">${ref.contact}</span>
+        </li>
+    `).join('');
+    document.getElementById('personal-references-list').innerHTML = personalRefHtml;
+
     // Header
     document.getElementById('name-title').innerHTML = `${data.name} <span>${data.lastName}</span>`;
     document.getElementById('job-title').innerText = data.jobTitle;
@@ -70,6 +90,8 @@ function renderCV(data) {
         contact: "Contacto",
         skills: "Habilidades Técnicas",
         softSkills: "Habilidades Blandas",
+        workReferences: "Referencias Laborales",
+        personalReferences: "Referencias Personales",
         profile: "Perfil Profesional",
         experience: "Experiencia Laboral",
         education: "Formación Académica y Técnica"
@@ -78,6 +100,8 @@ function renderCV(data) {
     if (document.getElementById('title-contact')) document.getElementById('title-contact').innerText = titles.contact;
     if (document.getElementById('title-skills')) document.getElementById('title-skills').innerText = titles.skills;
     if (document.getElementById('title-softSkills')) document.getElementById('title-softSkills').innerText = titles.softSkills;
+    if (document.getElementById('title-workReferences')) document.getElementById('title-workReferences').innerText = titles.workReferences;
+    if (document.getElementById('title-personalReferences')) document.getElementById('title-personalReferences').innerText = titles.personalReferences;
     if (document.getElementById('title-profile')) document.getElementById('title-profile').innerText = titles.profile;
     if (document.getElementById('title-experience')) document.getElementById('title-experience').innerText = titles.experience;
     if (document.getElementById('title-education')) document.getElementById('title-education').innerText = titles.education;
