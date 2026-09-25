@@ -85,5 +85,13 @@ window.cvData = {
             "institution": "Fundación Carlos Slim",
             "description": "Almacenista y Montacarguista | Protocolos de Atención y Servicio."
         }
-    ]
+    ],
+    "titles": {
+        "contact": "Contacto",
+        "skills": "Habilidades Técnicas",
+        "softSkills": "Habilidades Generales",
+        "profile": "Perfil Profesional",
+        "experience": "Experiencia Laboral",
+        "education": "Formación Académica y Técnica"
+    }
 };
