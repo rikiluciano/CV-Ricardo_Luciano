@@ -27,11 +27,12 @@
     </div>
 
     <!-- Incluir datos y lógica de renderizado -->
-    <!-- Incluir datos saltándose el caché del navegador -->
+    <!-- Incluir datos y lógica de renderizado saltándose el caché del navegador -->
     <script>
-        document.write('<script src="data.js?t=' + new Date().getTime() + '"><\/script>');
+        const t = new Date().getTime();
+        document.write('<script src="data.js?t=' + t + '"><\/script>');
+        document.write('<script src="render.js?t=' + t + '"><\/script>');
     </script>
-    <script src="render.js"></script>
 
     <!-- Contenedor principal del CV -->
     <div class="cv-wrapper">
@@ -92,6 +93,8 @@
             }
         });
     </script>
-    <script src="script.js"></script>
+    <script>
+        document.write('<script src="script.js?t=' + t + '"><\/script>');
+    </script>
 </body>
 </html>
