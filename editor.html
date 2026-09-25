@@ -47,15 +47,64 @@
         .toast.error .toast-icon { color: #e74c3c; }
         .toast-content { flex: 1; font-size: 0.9rem; color: #333; }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        /* Tema Oscuro */
+        body.dark-mode { background: #121212 !important; color: #e0e0e0; }
+        body.dark-mode .editor-sidebar { background: #1e1e1e; box-shadow: 2px 0 5px rgba(0,0,0,0.5); }
+        body.dark-mode .editor-header { background: #0f172a; }
+        body.dark-mode .section-title-editor { color: #93c5fd; border-bottom: 2px solid #3b82f6; }
+        body.dark-mode .form-group label { color: #cbd5e1; }
+        body.dark-mode .form-group input, body.dark-mode .form-group textarea { background: #334155; color: white; border: 1px solid #475569; }
+        body.dark-mode .array-item { background: #1e293b; border: 1px solid #334155; }
+        body.dark-mode #ai-panel { background: #1e293b !important; border-bottom: 2px solid #334155 !important; }
+        body.dark-mode #ai-panel strong { color: #e2e8f0 !important; }
+        body.dark-mode #ai-suggestions { color: #cbd5e1 !important; }
+        
+        /* Modal de Configuración */
+        dialog { border: none; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); padding: 0; width: 600px; max-width: 90%; background: #fff; }
+        dialog::backdrop { background: rgba(0,0,0,0.5); }
+        body.dark-mode dialog { background: #1e1e1e; color: #fff; }
+        .settings-container { display: flex; height: 400px; }
+        .settings-sidebar { width: 180px; background: #f8fafc; padding: 20px 0; border-right: 1px solid #e2e8f0; }
+        body.dark-mode .settings-sidebar { background: #0f172a; border-right: 1px solid #334155; }
+        .settings-tab { padding: 12px 20px; cursor: pointer; font-weight: 600; color: #64748b; border-left: 3px solid transparent; }
+        body.dark-mode .settings-tab { color: #94a3b8; }
+        .settings-tab:hover { background: #f1f5f9; }
+        body.dark-mode .settings-tab:hover { background: #1e293b; }
+        .settings-tab.active { background: #eff6ff; color: #3b82f6; border-left-color: #3b82f6; }
+        body.dark-mode .settings-tab.active { background: #1d4ed833; color: #60a5fa; border-left-color: #60a5fa; }
+        .settings-main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
+        .settings-content { display: none; }
+        .settings-content.active { display: block; }
+        .settings-content h3 { margin-top: 0; margin-bottom: 20px; color: #1e293b; }
+        body.dark-mode .settings-content h3 { color: #f8fafc; }
+        .settings-alert { display: none; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 13px; font-weight: bold; }
+        .alert-success { background: #dcfce7; color: #166534; }
+        .alert-error { background: #fee2e2; color: #991b1b; }
+        .close-dialog { position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; }
+        .btn-settings-nav { background: transparent; color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 5px 10px; border-radius: 5px; }
+        .btn-settings-nav:hover { background: rgba(255,255,255,0.1); }
+        .btn-settings-nav img { width: 25px; height: 25px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
+        .settings-form-group { margin-bottom: 15px; }
+        .settings-form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 600; }
+        .settings-form-group input, .settings-form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        body.dark-mode .settings-form-group input, body.dark-mode .settings-form-group select { background: #334155; color: white; border: 1px solid #475569; }
     </style>
 </head>
 <body>
 
     <!-- Editor Sidebar -->
     <div class="editor-sidebar">
-        <div class="editor-header">
-            <h2>Editor de CV</h2>
-            <button id="btn-save" class="btn-save"><i class="fas fa-save"></i> Guardar</button>
+        <div class="editor-header" id="navbar-header">
+            <!-- Navbar Controls -->
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button id="btn-settings" class="btn-settings-nav">
+                    <img id="nav-profile-pic" src="https://ui-avatars.com/api/?name=User&background=random" alt="Perfil">
+                    <span id="nav-profile-name">Ajustes</span>
+                </button>
+            </div>
+            <div>
+                <button id="btn-save" class="btn-save"><i class="fas fa-save"></i> Guardar</button>
+            </div>
         </div>
         
         <!-- Panel del Asistente "IA" -->
@@ -73,6 +122,62 @@
             <!-- Formulario dinámico generado por JS -->
         </div>
     </div>
+
+    <!-- Modal Configuración -->
+    <dialog id="settings-modal">
+        <div class="settings-container">
+            <div class="settings-sidebar">
+                <div class="settings-tab active" data-target="tab-profile"><i class="fas fa-user"></i> Perfil</div>
+                <div class="settings-tab" data-target="tab-appearance"><i class="fas fa-paint-brush"></i> Apariencia</div>
+                <div class="settings-tab" data-target="tab-security"><i class="fas fa-lock"></i> Seguridad</div>
+            </div>
+            <div class="settings-main">
+                <button id="btn-close-settings" class="close-dialog"><i class="fas fa-times"></i></button>
+                <div id="settings-alert" class="settings-alert"></div>
+                
+                <!-- Perfil -->
+                <div id="tab-profile" class="settings-content active">
+                    <h3>Perfil Público</h3>
+                    <div style="display:flex; gap:15px; align-items:center; margin-bottom: 20px;">
+                        <img id="current-profile-photo" src="https://ui-avatars.com/api/?name=User&background=random" style="width:70px; height:70px; border-radius:50%; object-fit:cover;">
+                        <div>
+                            <label for="profile-photo" style="cursor:pointer; color:#3b82f6; font-weight:bold; font-size:14px;"><i class="fas fa-upload"></i> Subir nueva foto</label>
+                            <input type="file" id="profile-photo" accept="image/*" style="display:none;">
+                            <p style="font-size:11px; margin-top:5px; color:#94a3b8;">Recomendado: 250x250px (JPG/PNG)</p>
+                        </div>
+                    </div>
+                    <div class="settings-form-group">
+                        <label>Nombre a mostrar</label>
+                        <input type="text" id="profile-name" placeholder="Tu nombre en la app">
+                    </div>
+                    <button id="btn-save-profile" class="btn-save" style="background:#3b82f6; width:100%;">Guardar Perfil</button>
+                </div>
+
+                <!-- Apariencia -->
+                <div id="tab-appearance" class="settings-content">
+                    <h3>Apariencia de la App</h3>
+                    <div class="settings-form-group">
+                        <label>Tema del Editor</label>
+                        <select id="theme-select">
+                            <option value="system">Automático (Sistema)</option>
+                            <option value="light">Modo Claro</option>
+                            <option value="dark">Modo Oscuro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Seguridad -->
+                <div id="tab-security" class="settings-content">
+                    <h3>Seguridad de la Cuenta</h3>
+                    <div class="settings-form-group">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" id="new-password" placeholder="Al menos 6 caracteres">
+                    </div>
+                    <button id="btn-change-password" class="btn-save" style="background:#eab308; width:100%; margin-bottom:15px;"><i class="fas fa-key"></i> Cambiar Contraseña</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
 
     <!-- Live Preview -->
     <div class="preview-container">
@@ -138,22 +243,37 @@
 
     <script type="module">
         import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, signOut } from './firebase-config.js';
+        import { initSettings } from './settings.js';
         
+        // Iniciar Lógica del Modal
+        initSettings();
+
         // Botón de Cerrar Sesión
-        const header = document.querySelector('.editor-header');
+        const headerBtnArea = document.querySelector('#navbar-header > div:last-child');
         const logoutBtn = document.createElement('button');
-        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Salir';
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+        logoutBtn.title = "Cerrar Sesión";
         logoutBtn.className = 'btn-save';
         logoutBtn.style.background = '#e11d48';
         logoutBtn.style.marginLeft = '10px';
         logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = 'login.html');
-        header.appendChild(logoutBtn);
+        headerBtnArea.appendChild(logoutBtn);
 
         let currentUserId = null;
+
+        // Actualiza interfaz navbar
+        function updateNavbarProfile(user) {
+            if(user.displayName) document.getElementById('nav-profile-name').textContent = user.displayName;
+            if(user.photoURL) document.getElementById('nav-profile-pic').src = user.photoURL;
+        }
+        window.addEventListener('profileUpdated', () => {
+            if(auth.currentUser) updateNavbarProfile(auth.currentUser);
+        });
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserId = user.uid;
+                updateNavbarProfile(user);
                 
                 // Fetch user CV data from Firestore
                 const cvRef = doc(db, `users/${user.uid}/cvs/default`);
