@@ -1,6 +1,6 @@
 window.cvData = {
-    "name": "Ricardos",
-    "lastName": "Lucianor",
+    "name": "Ricardo",
+    "lastName": "Luciano",
     "jobTitle": "Especialista en Almacén | Desarrollador Full Stack (En formación)",
     "profilePic": "perfil.jpg",
     "contact": {
