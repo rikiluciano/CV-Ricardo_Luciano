@@ -92,7 +92,23 @@ window.cvData = {
         "softSkills": "Habilidades Generales",
         "profile": "Perfil Profesional",
         "experience": "Experiencia Laboral",
-        "education": "Formación Académica y Técnica"
+        "education": "Formación Académica y Técnica",
+        "workReferences": "Referencias Laborales",
+        "personalReferences": "Referencias Personales"
     },
-    "profilePicOffsetY": "17"
+    "profilePicOffsetY": "17",
+    "workReferences": [
+        {
+            "name": "Luis Miguel De Dios Araujo",
+            "relation": "",
+            "contact": "829-320-7273"
+        }
+    ],
+    "personalReferences": [
+        {
+            "name": "Marisela Montero Orozco",
+            "relation": "",
+            "contact": "829-446-0052"
+        }
+    ]
 };
