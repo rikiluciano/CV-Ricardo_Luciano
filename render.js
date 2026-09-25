@@ -100,8 +100,24 @@ function highlightKeywords(text, data) {
     // Escapar caracteres especiales para RegExp
     const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     
-    // Construir la expresión regular para que coincida con la frase exacta
-    const pattern = new RegExp(`\\b(${finalKeywords.map(escapeRegExp).join('|')})\\b`, 'gi');
+    // Función para hacer que la regex ignore acentos y la "s" final opcional
+    const makeSmartPattern = (keyword) => {
+        let patternStr = escapeRegExp(keyword);
+        // Ignorar acentos
+        patternStr = patternStr.replace(/a|á/gi, '[aáAÁ]');
+        patternStr = patternStr.replace(/e|é/gi, '[eéEÉ]');
+        patternStr = patternStr.replace(/i|í/gi, '[iíIÍ]');
+        patternStr = patternStr.replace(/o|ó/gi, '[oóOÓ]');
+        patternStr = patternStr.replace(/u|ú|ü/gi, '[uúüUÚÜ]');
+        // Hacer la 's' final opcional (para que "inventario" coincida con "inventarios")
+        patternStr = patternStr.replace(/s\b/gi, 's?');
+        // Si no termina en s, hacer que admita una s opcional al final de cada palabra
+        patternStr = patternStr.replace(/([a-zA-Záéíóú])\b/g, '$1s?');
+        return patternStr;
+    };
+    
+    // Construir la expresión regular para que coincida con la frase exacta, ignorando acentos y plurales
+    const pattern = new RegExp(`\\b(${finalKeywords.map(makeSmartPattern).join('|')})\\b`, 'gi');
     
     // Reemplazar envolviendo en strong
     return text.replace(pattern, '<strong>$1</strong>');
