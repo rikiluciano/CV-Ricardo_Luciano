@@ -98,7 +98,12 @@ export function initSettings() {
             if (profilePhotoInput.files.length > 0) {
                 const file = profilePhotoInput.files[0];
                 const storageRef = ref(storage, `users/${user.uid}/avatar.png`);
-                await uploadBytes(storageRef, file);
+                
+                // Add a timeout to prevent infinite hang if Storage is not initialized
+                const uploadPromise = uploadBytes(storageRef, file);
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de espera agotado. ¿Iniciaste Firebase Storage en la consola?')), 10000));
+                
+                await Promise.race([uploadPromise, timeoutPromise]);
                 photoURL = await getDownloadURL(storageRef);
             }
 

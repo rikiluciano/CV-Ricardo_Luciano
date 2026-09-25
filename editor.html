@@ -62,35 +62,77 @@
         body.dark-mode #ai-panel strong { color: #e2e8f0 !important; }
         body.dark-mode #ai-suggestions { color: #cbd5e1 !important; }
         
-        /* Modal de Configuración */
-        dialog { border: none; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); padding: 0; width: 600px; max-width: 90%; background: #fff; }
-        dialog::backdrop { background: rgba(0,0,0,0.5); }
-        body.dark-mode dialog { background: #1e1e1e; color: #fff; }
-        .settings-container { display: flex; height: 400px; }
-        .settings-sidebar { width: 180px; background: #f8fafc; padding: 20px 0; border-right: 1px solid #e2e8f0; }
+        /* ================= PREMIUM SETTINGS MODAL ================= */
+        dialog#settings-modal {
+            border: none; border-radius: 12px; padding: 0; width: 650px; max-width: 95%; max-height: 90vh;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; background: #ffffff;
+        }
+        body.dark-mode dialog#settings-modal { background: #1e293b; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        
+        dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
+        .close-dialog { position: absolute; top: 20px; right: 20px; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: #94a3b8; transition: color 0.2s; }
+        .close-dialog:hover { color: #0f172a; }
+        body.dark-mode .close-dialog:hover { color: #f8fafc; }
+        
+        .settings-container { display: flex; height: 480px; }
+        .settings-sidebar { 
+            width: 200px; background: #f8fafc; padding: 25px 0; border-right: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; gap: 8px;
+        }
         body.dark-mode .settings-sidebar { background: #0f172a; border-right: 1px solid #334155; }
-        .settings-tab { padding: 12px 20px; cursor: pointer; font-weight: 600; color: #64748b; border-left: 3px solid transparent; }
+        
+        .settings-tab { 
+            padding: 12px 24px; cursor: pointer; font-weight: 600; color: #64748b; 
+            border-left: 3px solid transparent; display: flex; align-items: center; gap: 12px;
+            font-size: 0.95rem; transition: all 0.2s;
+        }
         body.dark-mode .settings-tab { color: #94a3b8; }
-        .settings-tab:hover { background: #f1f5f9; }
-        body.dark-mode .settings-tab:hover { background: #1e293b; }
-        .settings-tab.active { background: #eff6ff; color: #3b82f6; border-left-color: #3b82f6; }
-        body.dark-mode .settings-tab.active { background: #1d4ed833; color: #60a5fa; border-left-color: #60a5fa; }
-        .settings-main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
-        .settings-content { display: none; }
+        .settings-tab:hover { background: #f1f5f9; color: #0f172a; }
+        body.dark-mode .settings-tab:hover { background: #1e293b; color: #f8fafc; }
+        .settings-tab.active { background: #eff6ff; color: #2563eb; border-left-color: #2563eb; }
+        body.dark-mode .settings-tab.active { background: #1e3a8a33; color: #3b82f6; border-left-color: #3b82f6; }
+        
+        .settings-main { flex: 1; padding: 35px 40px; overflow-y: auto; position: relative; }
+        .settings-content { display: none; animation: fadeIn 0.3s ease; }
         .settings-content.active { display: block; }
-        .settings-content h3 { margin-top: 0; margin-bottom: 20px; color: #1e293b; }
+        .settings-content h3 { margin-top: 0; margin-bottom: 25px; font-size: 1.5rem; color: #0f172a; letter-spacing: -0.5px; }
         body.dark-mode .settings-content h3 { color: #f8fafc; }
-        .settings-alert { display: none; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 13px; font-weight: bold; }
-        .alert-success { background: #dcfce7; color: #166534; }
-        .alert-error { background: #fee2e2; color: #991b1b; }
-        .close-dialog { position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; }
-        .btn-settings-nav { background: transparent; color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; padding: 5px 10px; border-radius: 5px; }
-        .btn-settings-nav:hover { background: rgba(255,255,255,0.1); }
-        .btn-settings-nav img { width: 25px; height: 25px; border-radius: 50%; object-fit: cover; border: 2px solid white; }
-        .settings-form-group { margin-bottom: 15px; }
-        .settings-form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 600; }
-        .settings-form-group input, .settings-form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        body.dark-mode .settings-form-group input, body.dark-mode .settings-form-group select { background: #334155; color: white; border: 1px solid #475569; }
+        
+        .settings-alert { 
+            display: none; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; 
+            font-size: 0.9rem; font-weight: 600; align-items: center; gap: 8px;
+        }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        body.dark-mode .alert-success { background: #064e3b; color: #a7f3d0; border-color: #059669; }
+        body.dark-mode .alert-error { background: #7f1d1d; color: #fecaca; border-color: #b91c1c; }
+
+        .btn-settings-nav { background: transparent; color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: background 0.2s; }
+        .btn-settings-nav:hover { background: rgba(255,255,255,0.15); }
+        .btn-settings-nav img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); }
+        
+        .settings-form-group { margin-bottom: 20px; }
+        .settings-form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #475569; }
+        body.dark-mode .settings-form-group label { color: #cbd5e1; }
+        .settings-form-group input, .settings-form-group select { 
+            width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s; background: #fff;
+        }
+        .settings-form-group input:focus, .settings-form-group select:focus {
+            outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        body.dark-mode .settings-form-group input, body.dark-mode .settings-form-group select { 
+            background: #0f172a; color: white; border-color: #334155; 
+        }
+        body.dark-mode .settings-form-group input:focus, body.dark-mode .settings-form-group select:focus {
+            border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-primary { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; width: 100%; transition: background 0.2s; margin-top: 10px; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
