@@ -93,5 +93,6 @@ window.cvData = {
         "profile": "Perfil Profesional",
         "experience": "Experiencia Laboral",
         "education": "Formación Académica y Técnica"
-    }
+    },
+    "profilePicOffsetY": "17"
 };
