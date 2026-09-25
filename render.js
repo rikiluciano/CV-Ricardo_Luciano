@@ -25,7 +25,14 @@ function renderCV(data) {
     // Header
     document.getElementById('name-title').innerHTML = `${data.name} <span>${data.lastName}</span>`;
     document.getElementById('job-title').innerText = data.jobTitle;
-    document.getElementById('profile-pic').src = data.profilePic;
+    
+    const imgEl = document.getElementById('profile-pic');
+    imgEl.src = data.profilePic || 'perfil.jpg';
+    if (data.profilePicOffsetY !== undefined) {
+        imgEl.style.objectPosition = `50% ${data.profilePicOffsetY}%`;
+    } else {
+        imgEl.style.objectPosition = `center`;
+    }
 
     // Profile Text
     document.getElementById('profile-text').innerHTML = highlightKeywords(data.profileText, data);

@@ -50,6 +50,17 @@ function renderForm() {
     html += createInput('name', 'Nombre', editorData.name);
     html += createInput('lastName', 'Apellido', editorData.lastName);
     html += createInput('jobTitle', 'Título Profesional', editorData.jobTitle);
+    html += createInput('profilePic', 'URL de tu Foto (ej: perfil.jpg o https://...)', editorData.profilePic || 'perfil.jpg');
+    
+    // Rango para mover la foto arriba o abajo
+    const offsetY = editorData.profilePicOffsetY !== undefined ? editorData.profilePicOffsetY : 50;
+    html += `
+        <div class="form-group">
+            <label>Ajustar posición de la foto (Arriba / Abajo)</label>
+            <input type="range" data-path="profilePicOffsetY" min="0" max="100" value="${offsetY}" style="width:100%; cursor:pointer;">
+        </div>
+    `;
+
     html += createTextarea('profileText', 'Perfil Profesional', editorData.profileText);
 
     // Títulos de Secciones
