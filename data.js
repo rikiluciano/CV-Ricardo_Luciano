@@ -1,7 +1,7 @@
 window.cvData = {
     "name": "Ricardo",
     "lastName": "Luciano",
-    "jobTitle": "Especialista en Almacén | Desarrollador Full Stack (En formación)",
+    "jobTitle": "Almacenista | Desarrollador Full Stack (En formación)",
     "profilePic": "perfil.jpg",
     "contact": {
         "phone": "849-710-6089",
