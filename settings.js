@@ -97,14 +97,25 @@ export function initSettings() {
             // Upload photo if selected
             if (profilePhotoInput.files.length > 0) {
                 const file = profilePhotoInput.files[0];
-                const storageRef = ref(storage, `users/${user.uid}/avatar.png`);
                 
-                // Add a timeout to prevent infinite hang if Storage is not initialized
-                const uploadPromise = uploadBytes(storageRef, file);
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de espera agotado. ¿Iniciaste Firebase Storage en la consola?')), 10000));
+                // Subir a Cloudinary sin necesidad de backend (Unsigned)
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', 'cv_avatars');
                 
-                await Promise.race([uploadPromise, timeoutPromise]);
-                photoURL = await getDownloadURL(storageRef);
+                const response = await fetch('https://api.cloudinary.com/v1_1/otcelufg/image/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al subir la imagen a Cloudinary');
+                }
+                
+                const data = await response.json();
+                
+                // IA de Cloudinary: Recorte inteligente centrado en el rostro a 200x200 px
+                photoURL = data.secure_url.replace('/upload/', '/upload/w_200,h_200,c_fill,g_face/');
             }
 
             // Update Auth Profile
