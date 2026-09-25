@@ -232,6 +232,14 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-dark);
 }
 
+.section-text strong, .job-tasks strong, .edu-desc strong {
+    color: var(--accent-color);
+    font-weight: 700;
+    background-color: rgba(20, 184, 166, 0.1);
+    padding: 0 3px;
+    border-radius: 3px;
+}
+
 /* Experience */
 .job {
     margin-bottom: 25px;

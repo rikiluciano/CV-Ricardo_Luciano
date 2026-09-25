@@ -2,12 +2,17 @@ let editorData = JSON.parse(JSON.stringify(window.cvData || {}));
 
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
-    renderCV(editorData);
+    updatePreview(editorData);
     
     document.getElementById('btn-save').addEventListener('click', handleSaveClick);
     document.getElementById('btn-save-token').addEventListener('click', saveWithToken);
     document.getElementById('btn-download-only').addEventListener('click', downloadDataJS);
 });
+
+function updatePreview(data) {
+    renderCV(data);
+    if(typeof analyzeCV === 'function') analyzeCV(data);
+}
 
 function initEditor() {
     renderForm();
@@ -18,7 +23,7 @@ function initEditor() {
             const path = e.target.dataset.path;
             if (path) {
                 updateDataByPath(editorData, path, e.target.value);
-                renderCV(editorData);
+                updatePreview(editorData);
             }
         }
     });
@@ -118,14 +123,14 @@ function addItem(type) {
     if (type === 'education') editorData.education.push({ degree: 'Título', institution: 'Institución', date: '', description: '' });
     
     renderArrayItems();
-    renderCV(editorData);
+    updatePreview(editorData);
 }
 
 window.removeItem = function(type, index) {
     if(confirm('¿Estás seguro de eliminar este elemento?')) {
         editorData[type].splice(index, 1);
         renderArrayItems();
-        renderCV(editorData);
+        updatePreview(editorData);
     }
 };
 
@@ -287,4 +292,89 @@ function showToast(message, type = 'success') {
             }
         }, 300);
     }, 4000);
+}
+
+// === Inteligencia Artificial Básica (Linter de CV) ===
+function analyzeCV(data) {
+    let score = 10.0;
+    const suggestions = [];
+
+    // 1. Longitud del perfil
+    const pLen = data.profileText ? data.profileText.trim().length : 0;
+    if (pLen < 150) {
+        score -= 1.5;
+        suggestions.push("✏️ Tu perfil profesional es un poco corto. Intenta destacar más tus mayores logros y qué puedes aportar a una empresa.");
+    } else if (pLen > 700) {
+        score -= 1.0;
+        suggestions.push("✂️ Tu perfil es algo extenso. Los reclutadores prefieren leer entre 3 y 5 líneas concisas y de alto impacto.");
+    }
+
+    // 2. LinkedIn
+    if (!data.contact || !data.contact.linkedin || data.contact.linkedin.trim() === '') {
+        score -= 1.0;
+        suggestions.push("🔗 Te recomendamos añadir la URL de tu LinkedIn para dar más credibilidad profesional.");
+    }
+
+    // 3. Experiencia y métricas
+    if (!data.experience || data.experience.length === 0) {
+        score -= 2.0;
+        suggestions.push("💼 No has agregado experiencia laboral. ¡Añade al menos una!");
+    } else {
+        let hasMetrics = false;
+        let hasTasks = false;
+        data.experience.forEach(exp => {
+            if (exp.tasks && exp.tasks.length > 0) {
+                hasTasks = true;
+                exp.tasks.forEach(task => {
+                    if (/\d+%?/.test(task)) {
+                        hasMetrics = true;
+                    }
+                });
+            }
+        });
+        
+        if (!hasTasks) {
+            score -= 1.0;
+            suggestions.push("📝 Describe al menos una tarea o responsabilidad por cada experiencia laboral.");
+        } else if (!hasMetrics) {
+            score -= 1.5;
+            suggestions.push("📈 Considera añadir métricas o números a tus tareas (ej: 'Mejoré la eficiencia un 20%', 'Manejé $10,000', 'Lideré 5 personas'). Esto multiplica el impacto de tu CV.");
+        }
+    }
+
+    // 4. Habilidades
+    if (!data.skills || data.skills.length < 3) {
+        score -= 1.0;
+        suggestions.push("🛠️ Añade al menos 3 habilidades técnicas clave para pasar los filtros automáticos (ATS).");
+    }
+    if (!data.softSkills || data.softSkills.length < 3) {
+        score -= 0.5;
+        suggestions.push("🤝 Añade al menos 3 habilidades blandas (ej: Trabajo en equipo, Liderazgo).");
+    }
+
+    // Actualizar UI
+    if (score < 0) score = 0;
+    
+    const scoreEl = document.getElementById('ai-score');
+    if (scoreEl) {
+        scoreEl.innerText = score.toFixed(1) + "/10";
+        if (score >= 9) {
+            scoreEl.style.background = '#27ae60'; // Verde
+        } else if (score >= 7) {
+            scoreEl.style.background = '#f1c40f'; // Amarillo
+            scoreEl.style.color = '#000';
+        } else {
+            scoreEl.style.background = '#e74c3c'; // Rojo
+            scoreEl.style.color = '#fff';
+        }
+    }
+
+    const suggestionsEl = document.getElementById('ai-suggestions');
+    if (suggestionsEl) {
+        if (suggestions.length === 0) {
+            suggestionsEl.innerHTML = `<li style="color:#27ae60; font-weight:bold;">¡Tu CV está excelente! Listo para enviar a los reclutadores. 🚀</li>`;
+        } else {
+            suggestionsEl.innerHTML = suggestions.map(s => `<li style="margin-bottom:8px;">${s}</li>`).join('');
+        }
+    }
 }
