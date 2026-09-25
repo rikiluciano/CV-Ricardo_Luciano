@@ -27,7 +27,10 @@
     </div>
 
     <!-- Incluir datos y lógica de renderizado -->
-    <script src="data.js"></script>
+    <!-- Incluir datos saltándose el caché del navegador -->
+    <script>
+        document.write('<script src="data.js?t=' + new Date().getTime() + '"><\/script>');
+    </script>
     <script src="render.js"></script>
 
     <!-- Contenedor principal del CV -->
