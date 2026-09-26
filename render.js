@@ -1,4 +1,14 @@
 function renderCV(data) {
+
+    // Apply theme color if present
+    if (data.themeColor) {
+        document.documentElement.style.setProperty('--primary-color', data.themeColor);
+        if(data.themeColor === '#1e293b') document.documentElement.style.setProperty('--accent-color', '#334155');
+        else if(data.themeColor === '#3b82f6') document.documentElement.style.setProperty('--accent-color', '#1d4ed8');
+        else if(data.themeColor === '#e11d48') document.documentElement.style.setProperty('--accent-color', '#be123c');
+        else document.documentElement.style.setProperty('--accent-color', '#0f766e');
+    }
+
     // Contact Info
     const contactHtml = `
         <li><i class="fas fa-phone"></i> ${data.contact.phone}</li>

@@ -1,11 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const btnPdf = document.getElementById('btn-pdf');
-    const cvContainer = document.getElementById('cv-container');
+import re
 
-    // Funcionalidad para descargar como PDF
-    if (btnPdf) {
-        btnPdf.addEventListener('click', () => {
-        
+with open('script.js', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+new_logic = r"""
         // Extraer nombre para el archivo
         let userName = 'Mi_CV';
         if (window.cvData && window.cvData.name) {
@@ -22,10 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
             html2canvas:  { scale: 3, useCORS: true },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-        };
+        };"""
 
-        // Cambiar temporalmente los estilos si es necesario para el renderizado
-        html2pdf().set(opt).from(cvContainer).save();
-    });
-    }
-});
+content = re.sub(r"const opt = \{.*?\n\s+pagebreak:.*?\{.*?\}\n\s+\};", new_logic.replace('\\', '\\\\'), content, flags=re.DOTALL)
+
+with open('script.js', 'w', encoding='utf-8') as f:
+    f.write(content)

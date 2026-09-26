@@ -29,6 +29,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Enviar evento al padre para guardar en Firebase
         window.dispatchEvent(new CustomEvent('saveToFirebase', { detail: editorData }));
     });
+
+    // --- AUTOSAVE LOGIC ---
+    let autoSaveTimeout;
+    document.getElementById('editor-form').addEventListener('input', (e) => {
+        updateDataFromForm(); // Ensure data is updated before saving
+        
+        const btn = document.getElementById('btn-save');
+        if (btn) {
+            if (!btn.innerHTML.includes('Guardando')) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando... ☁️';
+            }
+        }
+        
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('saveToFirebase', { detail: editorData }));
+        }, 1500);
+    });
+
     // Removemos botones de GitHub
 });
 
