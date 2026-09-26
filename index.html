@@ -2,55 +2,418 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treluc CV</title>
-    <!-- Favicon (si tienes uno) -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>Editor de CV - Ricardo Luciano</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6000680100350093" crossorigin="anonymous"></script>
+
+    <!-- Estilos originales del CV y Estilos del Editor -->
+    <!-- Estilos (con cache buster) -->
+    <script>
+        document.write('<link rel="stylesheet" href="style.css?t=' + new Date().getTime() + '">');
+    </script>
     <style>
-        body {
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
+        body { margin: 0; padding: 0; display: flex; flex-direction: row !important; align-items: stretch !important; height: 100vh; background: #f0f2f5; overflow: hidden; }
+        .editor-sidebar { width: 400px; background: #fff; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; z-index: 10; }
+        .editor-header { padding: 20px; background: #2c3e50; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .editor-header h2 { margin: 0; font-size: 1.2rem; }
+        .btn-save { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-save:hover { background: #219653; }
+        .editor-content { flex: 1; overflow-y: auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; color: #333; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; box-sizing: border-box; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .section-title-editor { margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 5px; color: #2c3e50; font-size: 1.1rem; }
+        .array-item { background: #f8f9fa; padding: 15px; border: 1px solid #e9ecef; border-radius: 4px; margin-bottom: 10px; position: relative; }
+        .btn-remove { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; padding: 5px 8px; font-size: 0.8rem; }
+        .btn-add { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; width: 100%; margin-top: 5px; }
+        
+        .preview-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; }
+        
+        /* Ajuste para que el CV escale o encaje en el preview */
+        .cv-wrapper { margin: 0 !important; box-shadow: 0 0 15px rgba(0,0,0,0.1); transform: scale(0.9); transform-origin: top center; }
+        
+        /* Toast Notification */
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #fff; border-left: 5px solid #3498db; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 15px 20px; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; min-width: 250px; font-family: 'Montserrat', sans-serif; animation: slideIn 0.3s ease forwards; transition: opacity 0.3s ease; }
+        .toast.success { border-left-color: #27ae60; }
+        .toast.error { border-left-color: #e74c3c; }
+        .toast .toast-icon { margin-right: 15px; font-size: 1.2rem; }
+        .toast.success .toast-icon { color: #27ae60; }
+        .toast.error .toast-icon { color: #e74c3c; }
+        .toast-content { flex: 1; font-size: 0.9rem; color: #333; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        /* Tema Oscuro */
+        body.dark-mode { background: #121212 !important; color: #e0e0e0; }
+        body.dark-mode .editor-sidebar { background: #1e1e1e; box-shadow: 2px 0 5px rgba(0,0,0,0.5); }
+        body.dark-mode .editor-header { background: #0f172a; }
+        body.dark-mode .section-title-editor { color: #93c5fd; border-bottom: 2px solid #3b82f6; }
+        body.dark-mode .form-group label { color: #cbd5e1; }
+        body.dark-mode .form-group input, body.dark-mode .form-group textarea { background: #334155; color: white; border: 1px solid #475569; }
+        body.dark-mode .array-item { background: #1e293b; border: 1px solid #334155; }
+        body.dark-mode #ai-panel { background: #1e293b !important; border-bottom: 2px solid #334155 !important; }
+        body.dark-mode #ai-panel strong { color: #e2e8f0 !important; }
+        body.dark-mode #ai-suggestions { color: #cbd5e1 !important; }
+        
+        /* ================= PREMIUM SETTINGS MODAL ================= */
+        dialog#settings-modal {
+            border: none; border-radius: 12px; padding: 0; width: 650px; max-width: 95%; max-height: 90vh;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; background: #ffffff;
         }
-        .loader {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #02b3a6; /* Color de tu tema */
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        body.dark-mode dialog#settings-modal { background: #1e293b; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        
+        dialog::backdrop { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
+        .close-dialog { position: absolute; top: 20px; right: 20px; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: #94a3b8; transition: color 0.2s; }
+        .close-dialog:hover { color: #0f172a; }
+        body.dark-mode .close-dialog:hover { color: #f8fafc; }
+        
+        .settings-container { display: flex; height: 480px; }
+        .settings-sidebar { 
+            width: 200px; background: #f8fafc; padding: 25px 0; border-right: 1px solid #e2e8f0; 
+            display: flex; flex-direction: column; gap: 8px;
         }
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
+        body.dark-mode .settings-sidebar { background: #0f172a; border-right: 1px solid #334155; }
+        
+        .settings-tab { 
+            padding: 12px 24px; cursor: pointer; font-weight: 600; color: #64748b; 
+            border-left: 3px solid transparent; display: flex; align-items: center; gap: 12px;
+            font-size: 0.95rem; transition: all 0.2s;
         }
+        body.dark-mode .settings-tab { color: #94a3b8; }
+        .settings-tab:hover { background: #f1f5f9; color: #0f172a; }
+        body.dark-mode .settings-tab:hover { background: #1e293b; color: #f8fafc; }
+        .settings-tab.active { background: #eff6ff; color: #2563eb; border-left-color: #2563eb; }
+        body.dark-mode .settings-tab.active { background: #1e3a8a33; color: #3b82f6; border-left-color: #3b82f6; }
+        
+        .settings-main { flex: 1; padding: 35px 40px; overflow-y: auto; position: relative; }
+        .settings-content { display: none; animation: fadeIn 0.3s ease; }
+        .settings-content.active { display: block; }
+        .settings-content h3 { margin-top: 0; margin-bottom: 25px; font-size: 1.5rem; color: #0f172a; letter-spacing: -0.5px; }
+        body.dark-mode .settings-content h3 { color: #f8fafc; }
+        
+        .settings-alert { 
+            display: none; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; 
+            font-size: 0.9rem; font-weight: 600; align-items: center; gap: 8px;
+        }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        body.dark-mode .alert-success { background: #064e3b; color: #a7f3d0; border-color: #059669; }
+        body.dark-mode .alert-error { background: #7f1d1d; color: #fecaca; border-color: #b91c1c; }
+
+        .btn-settings-nav { background: transparent; color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: background 0.2s; }
+        .btn-settings-nav:hover { background: rgba(255,255,255,0.15); }
+        .btn-settings-nav img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); }
+        
+        .settings-form-group { margin-bottom: 20px; }
+        .settings-form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #475569; }
+        body.dark-mode .settings-form-group label { color: #cbd5e1; }
+        .settings-form-group input, .settings-form-group select { 
+            width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s; background: #fff;
+        }
+        .settings-form-group input:focus, .settings-form-group select:focus {
+            outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        body.dark-mode .settings-form-group input, body.dark-mode .settings-form-group select { 
+            background: #0f172a; color: white; border-color: #334155; 
+        }
+        body.dark-mode .settings-form-group input:focus, body.dark-mode .settings-form-group select:focus {
+            border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-primary { background: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; width: 100%; transition: background 0.2s; margin-top: 10px; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <div class="loader"></div>
-    <script type="module">
-        import { auth, onAuthStateChanged } from './firebase-config.js';
+
+    <!-- Editor Sidebar -->
+    <div class="editor-sidebar">
+        <div class="editor-header" id="navbar-header">
+            <!-- Navbar Controls -->
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button id="btn-settings" class="btn-settings-nav">
+                    <img id="nav-profile-pic" src="https://ui-avatars.com/api/?name=User&background=random" alt="Perfil">
+                    <span id="nav-profile-name">Ajustes</span>
+                </button>
+            </div>
+            <div>
+                <button id="btn-save" class="btn-save"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </div>
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const uid = urlParams.get('uid');
-        
-        if (uid) {
-            // Si es un enlace compartido, redirigir al visor público de forma silenciosa
-            window.location.replace('cv.html?uid=' + uid);
-        } else {
-            // Si es la raíz, redirigir al editor o al login según la sesión
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    window.location.replace('editor.html');
-                } else {
-                    window.location.replace('login.html');
-                }
-            });
-        }
+
+        <div class="editor-content" id="editor-form">
+            <!-- Formulario dinámico generado por JS -->
+        </div>
+    </div>
+
+    <!-- Modal Configuración -->
+    <dialog id="settings-modal">
+        <div class="settings-container">
+            <div class="settings-sidebar">
+                <div class="settings-tab active" data-target="tab-profile"><i class="fas fa-user"></i> Perfil</div>
+                <div class="settings-tab" data-target="tab-appearance"><i class="fas fa-paint-brush"></i> Apariencia</div>
+                <div class="settings-tab" data-target="tab-security"><i class="fas fa-lock"></i> Seguridad</div>
+            </div>
+            <div class="settings-main">
+                <button id="btn-close-settings" class="close-dialog"><i class="fas fa-times"></i></button>
+                <div id="settings-alert" class="settings-alert"></div>
+                
+                <!-- Perfil -->
+                <div id="tab-profile" class="settings-content active">
+                    <h3>Perfil Público</h3>
+                    <div style="display:flex; gap:15px; align-items:center; margin-bottom: 20px;">
+                        <img id="current-profile-photo" src="https://ui-avatars.com/api/?name=User&background=random" style="width:70px; height:70px; border-radius:50%; object-fit:cover;">
+                        <div>
+                            <label for="profile-photo" style="cursor:pointer; color:#3b82f6; font-weight:bold; font-size:14px;"><i class="fas fa-upload"></i> Subir nueva foto</label>
+                            <input type="file" id="profile-photo" accept="image/*" style="display:none;">
+                            <p style="font-size:11px; margin-top:5px; color:#94a3b8;">Recomendado: 250x250px (JPG/PNG)</p>
+                        </div>
+                    </div>
+                    <div class="settings-form-group">
+                        <label>Nombre a mostrar</label>
+                        <input type="text" id="profile-name" placeholder="Tu nombre en la app">
+                    </div>
+                    <button id="btn-save-profile" class="btn-save" style="background:#3b82f6; width:100%;">Guardar Perfil</button>
+                </div>
+
+                <!-- Apariencia -->
+                <div id="tab-appearance" class="settings-content">
+                    <h3>Apariencia de la App</h3>
+                    <div class="settings-form-group">
+                        <label>Tema del Editor</label>
+                        <select id="theme-select">
+                            <option value="system">Automático (Sistema)</option>
+                            <option value="light">Modo Claro</option>
+                            <option value="dark">Modo Oscuro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Seguridad -->
+                <div id="tab-security" class="settings-content">
+                    <h3>Seguridad de la Cuenta</h3>
+                    <div class="settings-form-group">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" id="new-password" placeholder="Al menos 6 caracteres">
+                    </div>
+                    <button id="btn-change-password" class="btn-save" style="background:#eab308; width:100%; margin-bottom:15px;"><i class="fas fa-key"></i> Cambiar Contraseña</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Live Preview -->
+    <div class="preview-container">
+        <!-- Reutilizamos la estructura del index.html para la vista previa -->
+        <div class="cv-wrapper">
+            <div id="cv-container" class="cv-container">
+                <aside class="sidebar">
+                    <div class="profile-pic-container">
+                        <img id="profile-pic" src="perfil.jpg" alt="Perfil" class="profile-pic">
+                    </div>
+                    <div class="sidebar-section contact-info">
+                        <h2 id="title-contact" class="sidebar-title">Contacto</h2>
+                        <ul id="contact-list"></ul>
+                    </div>
+                    <div class="sidebar-section skills">
+                        <h2 id="title-skills" class="sidebar-title">Habilidades Técnicas</h2>
+                        <div id="skills-list"></div>
+                    </div>
+                    <div class="sidebar-section skills">
+                        <h2 id="title-softSkills" class="sidebar-title">Habilidades Blandas</h2>
+                        <ul id="soft-skills-list" class="soft-skills"></ul>
+                    </div>
+                    <div class="sidebar-section references">
+                        <h2 id="title-workReferences" class="sidebar-title">Referencias Laborales</h2>
+                        <ul id="work-references-list" class="references-list"></ul>
+                    </div>
+                    <div class="sidebar-section references">
+                        <h2 id="title-personalReferences" class="sidebar-title">Referencias Personales</h2>
+                        <ul id="personal-references-list" class="references-list"></ul>
+                    </div>
+                </aside>
+                <main class="main-content">
+                    <header class="header">
+                        <h1 id="name-title" class="name"></h1>
+                        <h2 id="job-title" class="job-title"></h2>
+                    </header>
+                    <section class="section profile">
+                        <h2 class="section-title"><i class="fas fa-user-tie"></i> <span id="title-profile">Perfil Profesional</span></h2>
+                        <p id="profile-text" class="section-text"></p>
+                    </section>
+                    <section class="section experience">
+                        <h2 class="section-title"><i class="fas fa-briefcase"></i> <span id="title-experience">Experiencia Laboral</span></h2>
+                        <div id="experience-list"></div>
+                    </section>
+                    <section class="section education">
+                        <h2 class="section-title"><i class="fas fa-graduation-cap"></i> <span id="title-education">Formación Académica y Técnica</span></h2>
+                        <div id="education-list"></div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        const t = new Date().getTime();
+        document.write('<script src="render.js?t=' + t + '"><\/script>');
+        document.write('<script src="editor.js?t=' + t + '"><\/script>');
     </script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc, setDoc, signOut } from './firebase-config.js';
+        import { initSettings } from './settings.js';
+        
+        // Iniciar Lógica del Modal
+        initSettings();
+
+        const headerBtnArea = document.querySelector('#navbar-header > div:last-child');
+        
+        // Botón Ver CV Limpio
+        const viewBtn = document.createElement('button');
+        viewBtn.innerHTML = '<i class="fas fa-eye"></i> Ver CV';
+        viewBtn.title = "Ver CV Limpio";
+        viewBtn.className = 'btn-save';
+        viewBtn.style.background = '#0284c7'; // Azul
+        viewBtn.style.marginRight = '10px';
+        viewBtn.onclick = () => window.open(`cv.html?uid=${currentUserId}`, '_blank');
+        headerBtnArea.insertBefore(viewBtn, headerBtnArea.firstChild);
+
+        // Botón Compartir
+        const shareBtn = document.createElement('button');
+        shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> Compartir';
+        shareBtn.title = "Copiar link de solo lectura";
+        shareBtn.className = 'btn-save';
+        shareBtn.style.background = '#10b981'; // Verde
+        shareBtn.style.marginRight = '10px';
+        shareBtn.onclick = () => {
+            const url = `${window.location.origin}/cv.html?uid=${currentUserId}`;
+            navigator.clipboard.writeText(url).then(() => {
+                window.showToast('¡Link copiado al portapapeles!', 'success');
+            }).catch(err => {
+                console.error("Error al copiar", err);
+                window.showToast('Error al copiar el link.', 'error');
+            });
+        };
+        headerBtnArea.insertBefore(shareBtn, headerBtnArea.firstChild);
+
+        // Botón de Cerrar Sesión
+        const logoutBtn = document.createElement('button');
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+        logoutBtn.title = "Cerrar Sesión";
+        logoutBtn.className = 'btn-save';
+        logoutBtn.style.background = '#e11d48'; // Rojo
+        logoutBtn.style.marginLeft = '10px';
+        logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = 'login.html');
+        headerBtnArea.appendChild(logoutBtn);
+
+        let currentUserId = null;
+
+        // Actualiza interfaz navbar
+        function updateNavbarProfile(user) {
+            if(user.displayName) document.getElementById('nav-profile-name').textContent = user.displayName;
+            if(user.photoURL) document.getElementById('nav-profile-pic').src = user.photoURL;
+        }
+        window.addEventListener('profileUpdated', () => {
+            if(auth.currentUser) updateNavbarProfile(auth.currentUser);
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                updateNavbarProfile(user);
+                
+                // Fetch user CV data from Firestore
+                const cvRef = doc(db, `users/${user.uid}/cvs/default`);
+                const docSnap = await getDoc(cvRef);
+                
+                let data = null;
+                if (docSnap.exists()) {
+                    data = docSnap.data();
+                } else {
+                    // Cargar plantilla por defecto (Lorem Ipsum)
+                    data = {
+                        name: "Tu Nombre Completo",
+                        jobTitle: "Tu Profesión o Cargo",
+                        profileText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                        profilePic: "",
+                        profilePicOffsetY: 50,
+                        titles: {
+                            contact: "Contacto", skills: "Habilidades Técnicas", softSkills: "Habilidades Blandas",
+                            profile: "Perfil Profesional", experience: "Experiencia Laboral", education: "Formación Académica",
+                            workReferences: "Referencias Laborales", personalReferences: "Referencias Personales"
+                        },
+                        contact: { phone: "+1 234 567 8900", email: "correo@ejemplo.com", location: "Ciudad, País", linkedin: "linkedin.com/in/usuario", github: "github.com/usuario" },
+                        skills: [
+                            {name: "Habilidad Técnica 1", level: 90},
+                            {name: "Habilidad Técnica 2", level: 80},
+                            {name: "Habilidad Técnica 3", level: 70}
+                        ],
+                        softSkills: ["Trabajo en equipo", "Resolución de problemas", "Comunicación efectiva", "Liderazgo", "Adaptabilidad"],
+                        experience: [
+                            {role: "Cargo Anterior 1", company: "Empresa Uno S.A.", date: "Ene 2020 - Presente", tasks: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit.", "Sed do eiusmod tempor incididunt ut labore et dolore.", "Ut enim ad minim veniam, quis nostrud exercitation."]},
+                            {role: "Cargo Inicial 2", company: "Empresa Dos S.R.L.", date: "Feb 2017 - Dic 2019", tasks: ["Duis aute irure dolor in reprehenderit in voluptate velit.", "Excepteur sint occaecat cupidatat non proident."]}
+                        ],
+                        education: [
+                            {degree: "Título Universitario", institution: "Universidad de Ejemplo", date: "2013 - 2017", description: "Graduado con honores. Proyecto final sobre optimización de procesos."},
+                            {degree: "Diplomado Especializado", institution: "Instituto Tecnológico", date: "2018", description: "Especialización en herramientas y estrategias modernas."}
+                        ],
+                        workReferences: [
+                            {name: "Nombre Referencia 1", relation: "Jefe Directo", contact: "+1 234 567 8901"}
+                        ],
+                        personalReferences: [
+                            {name: "Nombre Referencia 2", relation: "Colega", contact: "+1 234 567 8902"}
+                        ]
+                    };
+                }
+                
+                // Iniciar editor con datos
+                window.startEditor(data);
+                
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Escuchar el evento de guardado
+        window.addEventListener('saveToFirebase', async (e) => {
+            if(!currentUserId) return;
+            const editorData = e.detail;
+            
+            const btn = document.getElementById('btn-save');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            btn.disabled = true;
+
+            try {
+                const cvRef = doc(db, `users/${currentUserId}/cvs/default`);
+                await setDoc(cvRef, editorData);
+                window.showToast('¡Guardado exitosamente en la Nube!', 'success');
+            } catch (error) {
+                console.error("Error guardando:", error);
+                window.showToast('Error al guardar.', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+    <!-- AI Integration -->
+    <script src="ai.js"></script>
 </body>
 </html>
