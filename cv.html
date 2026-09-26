@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-width=1.0">
+    <title>CV Ricardo Luciano - Especialista en Almacén & Full Stack</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6000680100350093" crossorigin="anonymous"></script>
+    
+    <!-- Custom CSS -->
+    <!-- Estilos (con cache buster en JS más abajo, pero dejamos este como fallback inicial) -->
+    <script>
+        document.write('<link rel="stylesheet" href="style.css?t=' + new Date().getTime() + '">');
+    </script>
+    
+    <!-- HTML2PDF Library for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- Controles de descarga (no se imprimirán ni exportarán) -->
+    <div class="download-controls" data-html2canvas-ignore="true">
+        <button id="btn-pdf" class="btn btn-pdf"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
+    </div>
+
+    <!-- Incluir lógica de renderizado -->
+    <script src="render.js"></script>
+
+    <!-- Contenedor principal del CV -->
+    <div class="cv-wrapper">
+        <div id="cv-container" class="cv-container">
+            
+            <!-- Columna Izquierda (Sidebar) -->
+            <aside class="sidebar">
+                <div class="profile-pic-container">
+                    <img id="profile-pic" src="perfil.jpg" alt="Ricardo Luciano" class="profile-pic">
+                </div>
+                
+                <div class="sidebar-section contact-info">
+                    <h2 id="title-contact" class="sidebar-title">Contacto</h2>
+                    <ul id="contact-list"></ul>
+                </div>
+
+                <div class="sidebar-section skills">
+                    <h2 id="title-skills" class="sidebar-title">Habilidades Técnicas</h2>
+                    <div id="skills-list"></div>
+                </div>
+                
+                <div class="sidebar-section skills">
+                    <h2 id="title-softSkills" class="sidebar-title">Habilidades Blandas</h2>
+                    <ul id="soft-skills-list" class="soft-skills"></ul>
+                </div>
+
+                <div class="sidebar-section references">
+                    <h2 id="title-workReferences" class="sidebar-title">Referencias Laborales</h2>
+                    <ul id="work-references-list" class="references-list"></ul>
+                </div>
+                
+                <div class="sidebar-section references">
+                    <h2 id="title-personalReferences" class="sidebar-title">Referencias Personales</h2>
+                    <ul id="personal-references-list" class="references-list"></ul>
+                </div>
+            </aside>
+
+            <!-- Columna Derecha (Main Content) -->
+            <main class="main-content">
+                <header class="header">
+                    <h1 id="name-title" class="name"></h1>
+                    <h2 id="job-title" class="job-title"></h2>
+                </header>
+
+                <section class="section profile">
+                    <h2 class="section-title"><i class="fas fa-user-tie"></i> <span id="title-profile">Perfil Profesional</span></h2>
+                    <p id="profile-text" class="section-text"></p>
+                </section>
+
+                <section class="section experience">
+                    <h2 class="section-title"><i class="fas fa-briefcase"></i> <span id="title-experience">Experiencia Laboral</span></h2>
+                    <div id="experience-list"></div>
+                </section>
+
+                <section class="section education">
+                    <h2 class="section-title"><i class="fas fa-graduation-cap"></i> <span id="title-education">Formación Académica y Técnica</span></h2>
+                    <div id="education-list"></div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const uid = urlParams.get('uid');
+            
+            if (uid) {
+                // Cargar CV de la URL
+                loadCV(uid);
+            } else {
+                // Si no hay uid, redirigir a la página principal
+                window.location.replace('index.html');
+            }
+        });
+
+        async function loadCV(userId) {
+            try {
+                const cvRef = doc(db, `users/${userId}/cvs/default`);
+                const docSnap = await getDoc(cvRef);
+                if (docSnap.exists()) {
+                    window.cvData = docSnap.data();
+                    if(typeof renderCV === 'function') {
+                        renderCV(window.cvData);
+                    }
+                } else {
+                    document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">CV no encontrado o vacío</h1>';
+                }
+            } catch (error) {
+                console.error("Error obteniendo documento:", error);
+                document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">Error al cargar el CV</h1>';
+            }
+        }
+    </script>
+</body>
+</html>

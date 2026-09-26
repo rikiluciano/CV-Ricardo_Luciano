@@ -1,0 +1,23 @@
+{"users": [
+{
+  "localId": "LQ7VxWRRMFWC7GroYu1eCFPJq1w2",
+  "email": "asielluciano1997@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "cRt9Y+258OtUYRKPXRLAU/e6MzWABTbO8cbQvmPDZJ4ZlkUrbIb82URJ9pqZ9Phy3ywb/RkpD5+qI2Al15MFgQ==",
+  "salt": "SgYlZDW/KdNkZQ==",
+  "lastSignedInAt": "1790344440396",
+  "createdAt": "1790344440396",
+  "providerUserInfo": []
+},
+{
+  "localId": "m64j73y9AXX1u1Vo4oyHiu0DptJ2",
+  "email": "rikiluciano588@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "u1NXCVp8qcTyMABJtk/rE0B3uBfGEDhnkvYZ0M8yHcn/6ex7DKKinf6+BeA1tc14UT6FPfJLyU9XdGSPOlMmaA==",
+  "salt": "LWs2yPC90SDKRQ==",
+  "displayName": "Ricardo Luciano",
+  "photoUrl": "https://res.cloudinary.com/otcelufg/image/upload/w_200,h_200,c_fill,g_face/v1790346440/i1ubfpglkbtrbhc3hvae.jpg",
+  "lastSignedInAt": "1790343905268",
+  "createdAt": "1790343905268",
+  "providerUserInfo": []
+}]}
